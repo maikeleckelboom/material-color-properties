@@ -1,0 +1,28 @@
+{
+  "name": "@webhead/material-color-properties",
+  "description": "This package streamlines the process of accessing properties from the Material Design 3 theme definition. By providing convenient access to color schemes, typography, and layout attributes, developers can save time and effort while ensuring consistent and cohesive user experiences.",
+  "version": "0.0.1",
+  "private": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "dev": "vitest",
+    "test": "vitest run",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "lint": "tsc",
+    "ci": "pnpm lint && pnpm test && pnpm build",
+    "release": "pnpm ci && changeset publish"
+  },
+  "keywords": [],
+  "author": "Maikel Eckelboom",
+  "license": "ISC",
+  "devDependencies": {
+    "@changesets/cli": "^2.26.0",
+    "@types/node": "^18.14.1",
+    "tsup": "^6.6.3",
+    "typescript": "^4.9.5",
+    "vite": "^4.1.4",
+    "vitest": "^0.28.5"
+  }
+}

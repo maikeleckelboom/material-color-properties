@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 1.0.0
+
+### Major Changes
+
+- 7400220: Correctly works now, did change fn name
+
 ## 0.0.7
 
 ### Patch Changes

@@ -22,7 +22,8 @@
   },
   "peerDependenciesMeta": {
     "@material/material-color-utilities": {
-      "autoinstall": true
+      "autoinstall": true,
+      "ignoreScripts": true
     }
   },
   "dependencies": {

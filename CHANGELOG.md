@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 0.0.6
+
+### Patch Changes
+
+- 0eebfd0: trying things
+
 ## 0.0.5
 
 ### Patch Changes

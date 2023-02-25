@@ -17,13 +17,11 @@
   "keywords": [],
   "author": "Maikel Eckelboom",
   "license": "ISC",
-  "dependencies": {
-    "@material/material-color-utilities": "^0.2.1"
-  },
   "peerDependencies": {
     "@material/material-color-utilities": "^0.2.1"
   },
   "devDependencies": {
+    "@material/material-color-utilities": "^0.2.1",
     "@changesets/cli": "^2.26.0",
     "@types/node": "^18.14.1",
     "tsup": "^6.6.3",

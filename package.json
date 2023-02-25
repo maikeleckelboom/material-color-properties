@@ -17,8 +17,14 @@
   "keywords": [],
   "author": "Maikel Eckelboom",
   "license": "ISC",
-  "dependencies": {
+  "peerDependencies": {
     "@importantimport/material-color-utilities": "^0.2.1"
+  },
+  "peerDependenciesMeta": {
+    "@importantimport/material-color-utilities": {
+      "optional": false,
+      "peer": true
+    }
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
@@ -26,6 +32,7 @@
     "tsup": "^6.6.3",
     "typescript": "^4.9.5",
     "vite": "^4.1.4",
-    "vitest": "^0.28.5"
+    "vitest": "^0.28.5",
+    "@importantimport/material-color-utilities": "^0.2.1"
   }
 }

@@ -1,5 +1,12 @@
 # @webhead/material-color-properties
 
+## 0.0.5
+
+### Patch Changes
+
+- fa23634: dependency fix
+- 4eac0a3: another fix
+
 ## 0.0.4
 
 ### Patch Changes

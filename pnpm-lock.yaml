@@ -9,11 +9,9 @@ specifiers:
   vite: ^4.1.4
   vitest: ^0.28.5
 
-dependencies:
-  '@material/material-color-utilities': 0.2.1
-
 devDependencies:
   '@changesets/cli': 2.26.0
+  '@material/material-color-utilities': 0.2.1
   '@types/node': 18.14.1
   tsup: 6.6.3_typescript@4.9.5
   typescript: 4.9.5
@@ -653,7 +651,7 @@ packages:
   /@material/material-color-utilities/0.2.1:
     resolution: {integrity: sha512-zeBPrvtgwWbptT3o2DgTOAzfxTt+e05a5HfrZxVSDMPaPztCSI/FemN40WWXo7wg1N1yrGHAbOiioYc2CPNQNQ==}
     requiresBuild: true
-    dev: false
+    dev: true
 
   /@nodelib/fs.scandir/2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}

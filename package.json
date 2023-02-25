@@ -18,19 +18,15 @@
   "author": "Maikel Eckelboom",
   "license": "ISC",
   "peerDependencies": {
-    "@material/material-color-utilities": "^0.2.1"
+    "@importantimport/material-color-utilities": "^0.2.1"
   },
   "peerDependenciesMeta": {
-    "@material/material-color-utilities": {
-      "autoinstall": true,
-      "ignoreScripts": true
+    "@importantimport/material-color-utilities": {
+      "autoinstall": true
     }
   },
-  "dependencies": {
-    "@material/material-color-utilities": "^0.2.1"
-  },
   "devDependencies": {
-    "@material/material-color-utilities": "^0.2.1",
+    "@importantimport/material-color-utilities": "^0.2.1",
     "@changesets/cli": "^2.26.0",
     "@types/node": "^18.14.1",
     "tsup": "^6.6.3",

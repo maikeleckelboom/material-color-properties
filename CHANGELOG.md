@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 0.0.7
+
+### Patch Changes
+
+- 5461684: fix
+
 ## 0.0.6
 
 ### Patch Changes

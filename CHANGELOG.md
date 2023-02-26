@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 1.0.1
+
+### Patch Changes
+
+- e615f67: Updated README.md and fixed issue with propertiesFromTheme
+
 ## 1.0.0
 
 ### Major Changes

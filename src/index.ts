@@ -7,29 +7,12 @@ import {
     Theme,
     TonalPalette
 } from "@importantimport/material-color-utilities"
+import {hexAFromArgb, rgbFromHex, tokenize} from "./utils";
 
-// String utilities
-const tokenize = (str: string) => str
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .toLowerCase()
-
-const capitalize = (str: string) => str
-    .charAt(0)
-    .toUpperCase() + str.slice(1)
-
-const camelize = (str: string) => str
-    .split('-')
-    .map((word, index) => index === 0 ? word : capitalize(word))
-    .join('')
-
-// Color utilities
-const rgbFromHex = (hex: string) => {
-    const [r, g, b] = hex.match(/\w\w/g)?.map(x => parseInt(x, 16)) ?? [0, 0, 0]
-    return `${r}, ${g}, ${b}`
-}
-
-const hexAFromArgb = (value: number, alpha: number) => {
-    return `${hexFromArgb(value)}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`
+export interface FormatOptions {
+    tones?: number[],
+    brightnessSuffix?: boolean,
+    dark?: boolean
 }
 
 function derivePaletteProperties(theme: Theme, {
@@ -208,13 +191,13 @@ function getProperties(theme: Theme, {
     }
 }
 
-const propertiesFromTheme = (theme: Theme, options?: { tones?: number[], brightnessSuffix?: boolean, dark?: boolean }) => {
+const propertiesFromTheme = (theme: Theme, options: FormatOptions = {}) => {
 
     const defaults = {
         tones: [0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 95, 99, 100],
         brightnessSuffix: true,
         dark: false,
-    }
+    } as const
 
     const {tones, brightnessSuffix, dark} = Object.assign({}, defaults, options)
 

@@ -1,13 +1,17 @@
 # Material Color Properties
-This package streamlines the process of accessing properties from the Material Design 3 theme definition. By providing convenient access to color schemes, typography, and layout attributes, developers can save time and effort while ensuring consistent and cohesive user experiences.
 
-- [✨ &nbsp;Release Notes](/CHANGELOG.md)
+This package streamlines the process of accessing properties from the Material Design 3 theme.
 
-## Features
+<!-- By providing convenient access to color schemes, typography, and layout attributes, developers can save time and effort while ensuring consistent and cohesive user experiences. -->
+
+[✨ &nbsp;Release Notes](/CHANGELOG.md)
 
 <!-- Highlight some features your module provide here -->
-- ⛰ &nbsp;Derives color properties from a Material Design 3 theme
-- 🌲&nbsp;Tokenizes color properties for easy access
+
+- 🌲&nbsp;Derives color properties from a Material Design 3 theme
+
+## Do not use this package, as it is not yet ready for production. It is still in development.
+
 ## Quick Setup
 
 1. Add `@webhead/material-color-properties` dependency to your project
@@ -25,24 +29,26 @@ npm install @webhead/material-color-properties
 
 ## Example
 
-
 ```ts
 import {argbFromHex, CustomColor, Theme, themeFromSourceColor} from "@material/material-color-utilities";
 import {propertiesFromTheme} from '@webhead/material-color-properties'
 
-const sourceColor: number = argbFromHex('#ff0088')
+// 1. Get theme from source- and custom colors using 
+// @material/material-color-utilities package from Google
+const theme: Theme = themeFromSourceColor(argbFromHex('#ff0088'), [
+    {
+      name: 'Arab Green',
+      value: '#22a45a',
+      blend: true,
+    }
+])
 
-const customColors: CustomColor[] = [
-  {
-    name: 'Arab Green',
-    value: argbFromHex('#22a45a'),
-    blend: true,
-  }
-]
-
-const theme: Theme = themeFromSourceColor(sourceColor, customColors)
-
-const properties = propertiesFromTheme(theme)
+// 2. Use propertiesFromTheme to get all properties from the theme object
+const properties = propertiesFromTheme(theme, {
+    dark: false,
+    brightnessSuffix: true,
+    tones: [0, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 95, 99, 100]
+})
 
 console.log(properties) 
 {

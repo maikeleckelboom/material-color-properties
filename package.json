@@ -1,7 +1,7 @@
 {
   "name": "@webhead/material-color-properties",
   "description": "This package streamlines the process of accessing properties from the Material Design 3 theme definition. By providing convenient access to color schemes, typography, and layout attributes, developers can save time and effort while ensuring consistent and cohesive user experiences.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": false,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 1.0.2
+
+### Patch Changes
+
+- 8093501: Fix in readme.md and main method
+
 ## 1.0.1
 
 ### Patch Changes

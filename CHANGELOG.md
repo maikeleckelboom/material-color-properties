@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 1.0.3
+
+### Patch Changes
+
+- 6c71033: Moved stuff to /utils and changed README.md
+
 ## 1.0.2
 
 ### Patch Changes

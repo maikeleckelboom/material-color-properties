@@ -1,5 +1,6 @@
 import {
-    argbFromHex, Blend,
+    argbFromHex,
+    Blend,
     CustomColorGroup,
     hexFromArgb,
     Scheme,
@@ -7,17 +8,21 @@ import {
     TonalPalette
 } from "@importantimport/material-color-utilities"
 
+// String utilities
 const tokenize = (str: string) => str
     .replace(/([a-z])([A-Z])/g, '$1-$2')
     .toLowerCase()
 
-const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+const capitalize = (str: string) => str
+    .charAt(0)
+    .toUpperCase() + str.slice(1)
 
 const camelize = (str: string) => str
     .split('-')
     .map((word, index) => index === 0 ? word : capitalize(word))
     .join('')
 
+// Color utilities
 const rgbFromHex = (hex: string) => {
     const [r, g, b] = hex.match(/\w\w/g)?.map(x => parseInt(x, 16)) ?? [0, 0, 0]
     return `${r}, ${g}, ${b}`
@@ -27,14 +32,13 @@ const hexAFromArgb = (value: number, alpha: number) => {
     return `${hexFromArgb(value)}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`
 }
 
-function buildPaletteProperties (theme: Theme, {
+function derivePaletteProperties(theme: Theme, {
     tones,
     prefix
 }: { tones: number[], prefix?: string }) {
     const properties = {} as Record<string, string>
     for (const [key, value] of Object.entries(theme.palettes)) {
-        const tonalPalette = value instanceof TonalPalette ? value :
-            TonalPalette.fromInt(value)
+        const tonalPalette = value instanceof TonalPalette ? value : TonalPalette.fromInt(value)
         for (const tone of tones) {
             properties[`--${prefix ?? ''}${tokenize(key)}${tone}`] = hexFromArgb(tonalPalette.tone(tone))
         }
@@ -42,7 +46,7 @@ function buildPaletteProperties (theme: Theme, {
     return properties
 }
 
-function buildSchemeProperties (scheme: Scheme, {
+function deriveSchemeProperties(scheme: Scheme, {
     prefix,
     suffix
 }: { prefix?: string, suffix?: string }) {
@@ -54,7 +58,7 @@ function buildSchemeProperties (scheme: Scheme, {
     return properties
 }
 
-function buildSurfaceElevationProperties (argb: number, options: {
+function deriveSurfaceElevationProperties(argb: number, options: {
     prefix?: string,
     suffix?: string,
     tones?: number[]
@@ -63,20 +67,20 @@ function buildSurfaceElevationProperties (argb: number, options: {
     const tones = options?.tones ?? [0, 0.05, 0.08, 0.11, 0.12, 0.14]
     tones.forEach((tone, index) => {
         const color = hexAFromArgb(argb, tone)
-        const token = `--${options?.prefix ?? ''}-surface${index}${options?.suffix ?? ''}`
+        const token = `--${options?.prefix ?? ''}surface-level${index}${options?.suffix ?? ''}`
         properties[token] = color
     })
     return properties
 }
 
-const getRgbProperties = (properties: Record<string, string>) => {
+function rgbProperties(properties: Record<string, string>) {
     return Object.entries(properties).reduce((acc, [name, hex]) => ({
         ...acc,
         [`${name}-rgb`]: rgbFromHex(hex)
     }), {} as Record<string, string>)
 }
 
-function paletteFromCustomColor (customColor: CustomColorGroup, { tones }: { tones: number[] }) {
+function paletteFromCustomColor(customColor: CustomColorGroup, {tones}: { tones: number[] }) {
     let tonalPalette = TonalPalette.fromInt(customColor.color.value)
     if (customColor.color.blend) {
         // TODO: use source color from config
@@ -88,7 +92,7 @@ function paletteFromCustomColor (customColor: CustomColorGroup, { tones }: { ton
     return tonalPalette
 }
 
-function buildCustomSchemeProperties (colorGroup: CustomColorGroup, options?: {
+function deriveCustomSchemeProperties(colorGroup: CustomColorGroup, options?: {
     suffix?: string,
     prefix?: string,
     dark?: boolean
@@ -103,14 +107,14 @@ function buildCustomSchemeProperties (colorGroup: CustomColorGroup, options?: {
     return properties
 }
 
-function buildCustomPaletteProperties (customColors: CustomColorGroup[], {
+function deriveCustomPaletteProperties(customColors: CustomColorGroup[], {
     tones,
     prefix,
     suffix
 }: { tones: number[], prefix?: string, suffix?: string }) {
     const properties: Record<string, string> = {}
     for (const customColor of customColors) {
-        const palette = paletteFromCustomColor(customColor, { tones })
+        const palette = paletteFromCustomColor(customColor, {tones})
         tones.forEach((tone: number) => {
             const name = customColor.color.name.replace(/^\W+|\W+$|\s/g, '-').toLowerCase()
             const token = `--${prefix ?? ''}${name}${tone}${suffix ?? ''}`
@@ -120,27 +124,27 @@ function buildCustomPaletteProperties (customColors: CustomColorGroup[], {
     return properties
 }
 
-function collectProperties (theme: Theme, {
+function getProperties(theme: Theme, {
     dark,
     tones,
     brightnessSuffix
 }: { dark: boolean, tones: number[], brightnessSuffix: boolean }) {
 
-    const palettes = buildPaletteProperties(theme, {
+    const palettes = derivePaletteProperties(theme, {
         tones,
         prefix: 'md-ref-palette-'
     })
     const schemes = {
-        ...buildSchemeProperties(theme.schemes[dark ? 'dark' : 'light'], {
+        ...deriveSchemeProperties(theme.schemes[dark ? 'dark' : 'light'], {
             prefix: 'md-sys-color-'
         }),
         ...brightnessSuffix
             ? {
-                ...buildSchemeProperties(theme.schemes.light, {
+                ...deriveSchemeProperties(theme.schemes.light, {
                     prefix: 'md-sys-color-',
                     suffix: '-light'
                 }),
-                ...buildSchemeProperties(theme.schemes.dark, {
+                ...deriveSchemeProperties(theme.schemes.dark, {
                     prefix: 'md-sys-color-',
                     suffix: '-dark'
                 })
@@ -148,16 +152,16 @@ function collectProperties (theme: Theme, {
             : {}
     }
     const surfaceElevations = {
-        ...buildSurfaceElevationProperties(theme.source, {
+        ...deriveSurfaceElevationProperties(theme.source, {
             prefix: 'md-sys-color'
         }),
         ...brightnessSuffix
             ? {
-                ...buildSurfaceElevationProperties(theme.source, {
+                ...deriveSurfaceElevationProperties(theme.source, {
                     prefix: 'md-sys-color-',
                     suffix: '-light'
                 }),
-                ...buildSurfaceElevationProperties(theme.source, {
+                ...deriveSurfaceElevationProperties(theme.source, {
                     prefix: 'md-sys-color-',
                     suffix: '-dark'
                 })
@@ -165,24 +169,24 @@ function collectProperties (theme: Theme, {
             : {}
     }
 
-    const ccPalettes = buildCustomPaletteProperties(theme.customColors, {
+    const ccPalettes = deriveCustomPaletteProperties(theme.customColors, {
         tones,
         prefix: 'md-ref-palette-',
     })
 
     const ccSchemes = theme.customColors.reduce((acc, color) => ({
         ...acc,
-        ...buildCustomSchemeProperties(color, {
+        ...deriveCustomSchemeProperties(color, {
             prefix: 'md-custom-color-',
             dark
         }),
         ...brightnessSuffix
             ? {
-                ...buildCustomSchemeProperties(color, {
+                ...deriveCustomSchemeProperties(color, {
                     prefix: 'md-custom-color-',
                     suffix: '-light'
                 }),
-                ...buildCustomSchemeProperties(color, {
+                ...deriveCustomSchemeProperties(color, {
                     prefix: 'md-custom-color-',
                     suffix: '-dark'
                 })
@@ -190,8 +194,8 @@ function collectProperties (theme: Theme, {
             : {}
     }), {})
 
-    const schemesRgb = getRgbProperties(schemes)
-    const ccSchemesRgb = getRgbProperties(ccSchemes)
+    const schemesRgb = rgbProperties(schemes)
+    const ccSchemesRgb = rgbProperties(ccSchemes)
 
     return {
         ...palettes,
@@ -209,24 +213,18 @@ const propertiesFromTheme = (theme: Theme, options?: { tones?: number[], brightn
     const defaults = {
         tones: [0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 95, 99, 100],
         brightnessSuffix: true,
-        dark: true,
+        dark: false,
     }
 
-    const opts = Object.assign({}, defaults, options)
+    const {tones, brightnessSuffix, dark} = Object.assign({}, defaults, options)
 
-    const { tones, brightnessSuffix, dark } = opts
-
-    const properties = collectProperties(theme, {
+    return getProperties(theme, {
         tones,
         brightnessSuffix,
         dark
     })
-
-    console.log('🚀 properties', properties)
-
-    return properties
 }
 
 export {
-    propertiesFromTheme
+    propertiesFromTheme,
 }

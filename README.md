@@ -27,8 +27,8 @@ npm install @webhead/material-color-properties
 
 
 ```ts
-import {propertiesFromTheme} from '@webhead/@webhead/material-color-properties'
 import {argbFromHex, CustomColor, Theme, themeFromSourceColor} from "@material/material-color-utilities";
+import {propertiesFromTheme} from '@webhead/material-color-properties'
 
 const sourceColor: number = argbFromHex('#ff0088')
 

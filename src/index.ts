@@ -153,7 +153,7 @@ function getProperties(theme: Theme, {
     }
     const surfaceElevations = {
         ...deriveSurfaceElevationProperties(theme.source, {
-            prefix: 'md-sys-color'
+            prefix: 'md-sys-color-'
         }),
         ...brightnessSuffix
             ? {

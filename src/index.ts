@@ -1,5 +1,4 @@
 import {
-    argbFromHex,
     Blend,
     CustomColorGroup,
     hexFromArgb,
@@ -232,7 +231,7 @@ const propertiesFromTheme = (theme: Theme, options?: ALlToOptional<FormatOptions
         },
     }
 
-    const {tones, brightnessSuffix, dark, prefix} = Object.assign({}, defaults, options)
+    const {tones, brightnessSuffix, dark, prefix} = Object.assign({}, defaults, options ?? {})
 
     return deriveProperties(theme, {
         tones,
@@ -244,4 +243,7 @@ const propertiesFromTheme = (theme: Theme, options?: ALlToOptional<FormatOptions
 
 export {
     propertiesFromTheme,
+    hexAFromArgb,
+    rgbFromHex,
+    tokenize
 }

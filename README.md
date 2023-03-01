@@ -6,21 +6,20 @@ This package streamlines the process of accessing properties from the Material D
 
 ## Quick Setup
 
-1. Add `@webhead/material-color-properties` dependency to your project
+1. Add `@webhead/material-color-properties` dependency to your project, also add `@material/material-color-utilities` if you haven't already.
 
 ```bash
 # Using pnpm
-pnpm add @webhead/material-color-properties
+pnpm add @material/material-color-utilities @webhead/material-color-properties
 
 # Using yarn
-yarn add @webhead/material-color-properties
+yarn add @material/material-color-utilities @webhead/material-color-properties
 
 # Using npm
-npm install @webhead/material-color-properties
+npm install @material/material-color-utilities @webhead/material-color-properties
 ```
 
 ## Example
-
 ```ts
 import {argbFromHex, CustomColor, Theme, themeFromSourceColor} from "@material/material-color-utilities";
 import {propertiesFromTheme} from '@webhead/material-color-properties'
@@ -388,3 +387,17 @@ console.log(properties)
     "--md-custom-color-arab-green-container-dark-rgb": "169, 246, 134",
     "--md-custom-color-on-arab-green-container-dark-rgb": "5, 33, 0"
 }
+```
+### Type Declarations
+````
+interface PropertiesFromTheme {
+    tones?: number[],
+    brightnessSuffix?: boolean,
+    dark?: boolean,
+    prefix?: {
+        palette?: string,
+        scheme?: string,
+        custom?: string
+    }
+}
+````

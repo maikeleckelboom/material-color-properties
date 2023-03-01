@@ -63,11 +63,12 @@ function rgbProperties(properties: Record<string, string>) {
     }), {} as Record<string, string>)
 }
 
-function paletteFromCustomColor(customColor: CustomColorGroup, {tones}: { tones: number[] }) {
+function paletteFromCustomColor(customColor: CustomColorGroup, {
+    tones,
+    sourceColor
+}: { tones: number[], sourceColor: number }) {
     let tonalPalette = TonalPalette.fromInt(customColor.color.value)
     if (customColor.color.blend) {
-        // TODO: use source color from config
-        const sourceColor = argbFromHex('#2861b6')
         const harmonized = Blend.harmonize(customColor.color.value, sourceColor)
         tonalPalette = TonalPalette.fromInt(harmonized)
     }
@@ -93,11 +94,12 @@ function deriveCustomSchemeProperties(colorGroup: CustomColorGroup, options?: {
 function deriveCustomPaletteProperties(customColors: CustomColorGroup[], {
     tones,
     prefix,
-    suffix
-}: { tones: number[], prefix?: string, suffix?: string }) {
+    suffix,
+    sourceColor
+}: { tones: number[], prefix?: string, suffix?: string, sourceColor: number }) {
     const properties: Record<string, string> = {}
     for (const customColor of customColors) {
-        const palette = paletteFromCustomColor(customColor, {tones})
+        const palette = paletteFromCustomColor(customColor, {tones, sourceColor})
         tones.forEach((tone: number) => {
             const name = customColor.color.name.replace(/^\W+|\W+$|\s/g, '-').toLowerCase()
             const token = `--${prefix ?? ''}${name}${tone}${suffix ?? ''}`
@@ -122,7 +124,6 @@ function deriveProperties(theme: Theme, {
         customScheme?: string
     }
 }) {
-
     const palettes = derivePaletteProperties(theme, {
         tones,
         prefix: prefix.palette
@@ -164,7 +165,8 @@ function deriveProperties(theme: Theme, {
 
     const ccPalettes = deriveCustomPaletteProperties(theme.customColors, {
         tones,
-        prefix: prefix.palette
+        prefix: prefix.palette,
+        sourceColor: theme.source
     })
 
     const ccSchemes = theme.customColors.reduce((acc, color) => ({
@@ -188,6 +190,7 @@ function deriveProperties(theme: Theme, {
     }), {})
 
     const schemesRgb = rgbProperties(schemes)
+
     const ccSchemesRgb = rgbProperties(ccSchemes)
 
     return {
@@ -201,28 +204,32 @@ function deriveProperties(theme: Theme, {
     }
 }
 
-const propertiesFromTheme = (theme: Theme, options: TokenFormatOptions = {}) => {
-
-    interface PropertiesDefaults {
-        tones: number[],
-        brightnessSuffix: boolean,
-        dark: boolean,
-        prefix: {
-            palette: string,
-            scheme: string,
-            custom: string
-        }
+interface FormatOptions {
+    tones: number[],
+    brightnessSuffix: boolean,
+    dark: boolean,
+    prefix: {
+        palette: string,
+        scheme: string,
+        custom: string
     }
+}
 
-    const defaults: PropertiesDefaults = {
+type ALlToOptional<T> = {
+    [P in keyof T]?: T[P]
+}
+
+const propertiesFromTheme = (theme: Theme, options?: ALlToOptional<FormatOptions>) => {
+
+    const defaults: FormatOptions = {
         tones: [0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 95, 99, 100],
-        brightnessSuffix: true,
         dark: false,
+        brightnessSuffix: true,
         prefix: {
             palette: 'md-ref-palette-',
             scheme: 'md-sys-color-',
             custom: 'md-custom-color-'
-        }
+        },
     }
 
     const {tones, brightnessSuffix, dark, prefix} = Object.assign({}, defaults, options)

@@ -2,15 +2,7 @@
 
 This package streamlines the process of accessing properties from the Material Design 3 theme.
 
-<!-- By providing convenient access to color schemes, typography, and layout attributes, developers can save time and effort while ensuring consistent and cohesive user experiences. -->
-
 [✨ &nbsp;Release Notes](/CHANGELOG.md)
-
-<!-- Highlight some features your module provide here -->
-
-- 🌲&nbsp;Derives color properties from a Material Design 3 theme
-
-## Do not use this package, as it is not yet ready for production. It is still in development.
 
 ## Quick Setup
 
@@ -33,8 +25,6 @@ npm install @webhead/material-color-properties
 import {argbFromHex, CustomColor, Theme, themeFromSourceColor} from "@material/material-color-utilities";
 import {propertiesFromTheme} from '@webhead/material-color-properties'
 
-// 1. Get theme from source- and custom colors using 
-// @material/material-color-utilities package from Google
 const theme: Theme = themeFromSourceColor(argbFromHex('#ff0088'), [
     {
       name: 'Arab Green',
@@ -43,7 +33,6 @@ const theme: Theme = themeFromSourceColor(argbFromHex('#ff0088'), [
     }
 ])
 
-// 2. Use propertiesFromTheme to get all properties from the theme object
 const properties = propertiesFromTheme(theme, {
     dark: false,
     brightnessSuffix: true,
@@ -205,35 +194,35 @@ console.log(properties)
     "--md-sys-color-inverse-primary-light": "#ffb1c7",
     
     // Scheme Dark
-    "--md-sys-color-primary-light": "#ba0061",
-    "--md-sys-color-on-primary-light": "#ffffff",
-    "--md-sys-color-primary-container-light": "#ffd9e2",
-    "--md-sys-color-on-primary-container-light": "#3e001d",
-    "--md-sys-color-secondary-light": "#74565e",
-    "--md-sys-color-on-secondary-light": "#ffffff",
-    "--md-sys-color-secondary-container-light": "#ffd9e2",
-    "--md-sys-color-on-secondary-container-light": "#2b151c",
-    "--md-sys-color-tertiary-light": "#7c5635",
-    "--md-sys-color-on-tertiary-light": "#ffffff",
-    "--md-sys-color-tertiary-container-light": "#ffdcc1",
-    "--md-sys-color-on-tertiary-container-light": "#2e1500",
-    "--md-sys-color-error-light": "#ba1a1a",
-    "--md-sys-color-on-error-light": "#ffffff",
-    "--md-sys-color-error-container-light": "#ffdad6",
-    "--md-sys-color-on-error-container-light": "#410002",
-    "--md-sys-color-background-light": "#fffbff",
-    "--md-sys-color-on-background-light": "#201a1b",
-    "--md-sys-color-surface-light": "#fffbff",
-    "--md-sys-color-on-surface-light": "#201a1b",
-    "--md-sys-color-surface-variant-light": "#f2dde1",
-    "--md-sys-color-on-surface-variant-light": "#514346",
-    "--md-sys-color-outline-light": "#837376",
-    "--md-sys-color-outline-variant-light": "#d5c2c5",
-    "--md-sys-color-shadow-light": "#000000",
-    "--md-sys-color-scrim-light": "#000000",
-    "--md-sys-color-inverse-surface-light": "#352f30",
-    "--md-sys-color-inverse-on-surface-light": "#faeeef",
-    "--md-sys-color-inverse-primary-light": "#ffb1c7",
+    "--md-sys-color-primary-dark": "#ba0061",
+    "--md-sys-color-on-primary-dark": "#ffffff",
+    "--md-sys-color-primary-container-dark": "#ffd9e2",
+    "--md-sys-color-on-primary-container-dark": "#3e001d",
+    "--md-sys-color-secondary-dark": "#74565e",
+    "--md-sys-color-on-secondary-dark": "#ffffff",
+    "--md-sys-color-secondary-container-dark": "#ffd9e2",
+    "--md-sys-color-on-secondary-container-dark": "#2b151c",
+    "--md-sys-color-tertiary-dark": "#7c5635",
+    "--md-sys-color-on-tertiary-dark": "#ffffff",
+    "--md-sys-color-tertiary-container-dark": "#ffdcc1",
+    "--md-sys-color-on-tertiary-container-dark": "#2e1500",
+    "--md-sys-color-error-dark": "#ba1a1a",
+    "--md-sys-color-on-error-dark": "#ffffff",
+    "--md-sys-color-error-container-dark": "#ffdad6",
+    "--md-sys-color-on-error-container-dark": "#410002",
+    "--md-sys-color-background-dark": "#fffbff",
+    "--md-sys-color-on-background-dark": "#201a1b",
+    "--md-sys-color-surface-dark": "#fffbff",
+    "--md-sys-color-on-surface-dark": "#201a1b",
+    "--md-sys-color-surface-variant-dark": "#f2dde1",
+    "--md-sys-color-on-surface-variant-dark": "#514346",
+    "--md-sys-color-outline-dark": "#837376",
+    "--md-sys-color-outline-variant-dark": "#d5c2c5",
+    "--md-sys-color-shadow-dark": "#000000",
+    "--md-sys-color-scrim-dark": "#000000",
+    "--md-sys-color-inverse-surface-dark": "#352f30",
+    "--md-sys-color-inverse-on-surface-dark": "#faeeef",
+    "--md-sys-color-inverse-primary-dark": "#ffb1c7",
    
     // Surface Level
     "--md-sys-color-surface-level0": "#ff008800",

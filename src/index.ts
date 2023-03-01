@@ -9,7 +9,7 @@ import {
 } from "@importantimport/material-color-utilities"
 import {hexAFromArgb, rgbFromHex, tokenize} from "./utils";
 
-export interface FormatOptions {
+export interface TokenFormatOptions {
     tones?: number[],
     brightnessSuffix?: boolean,
     dark?: boolean
@@ -107,28 +107,38 @@ function deriveCustomPaletteProperties(customColors: CustomColorGroup[], {
     return properties
 }
 
-function getProperties(theme: Theme, {
+function deriveProperties(theme: Theme, {
     dark,
     tones,
-    brightnessSuffix
-}: { dark: boolean, tones: number[], brightnessSuffix: boolean }) {
+    brightnessSuffix,
+    prefix
+}: {
+    dark: boolean,
+    tones: number[],
+    brightnessSuffix: boolean,
+    prefix: {
+        palette?: string,
+        scheme?: string,
+        customScheme?: string
+    }
+}) {
 
     const palettes = derivePaletteProperties(theme, {
         tones,
-        prefix: 'md-ref-palette-'
+        prefix: prefix.palette
     })
     const schemes = {
         ...deriveSchemeProperties(theme.schemes[dark ? 'dark' : 'light'], {
-            prefix: 'md-sys-color-'
+            prefix: prefix.scheme
         }),
         ...brightnessSuffix
             ? {
                 ...deriveSchemeProperties(theme.schemes.light, {
-                    prefix: 'md-sys-color-',
+                    prefix: prefix.scheme,
                     suffix: '-light'
                 }),
                 ...deriveSchemeProperties(theme.schemes.dark, {
-                    prefix: 'md-sys-color-',
+                    prefix: prefix.scheme,
                     suffix: '-dark'
                 })
             }
@@ -136,16 +146,16 @@ function getProperties(theme: Theme, {
     }
     const surfaceElevations = {
         ...deriveSurfaceElevationProperties(theme.source, {
-            prefix: 'md-sys-color-'
+            prefix: prefix.scheme,
         }),
         ...brightnessSuffix
             ? {
                 ...deriveSurfaceElevationProperties(theme.source, {
-                    prefix: 'md-sys-color-',
+                    prefix: prefix.scheme,
                     suffix: '-light'
                 }),
                 ...deriveSurfaceElevationProperties(theme.source, {
-                    prefix: 'md-sys-color-',
+                    prefix: prefix.scheme,
                     suffix: '-dark'
                 })
             }
@@ -154,23 +164,23 @@ function getProperties(theme: Theme, {
 
     const ccPalettes = deriveCustomPaletteProperties(theme.customColors, {
         tones,
-        prefix: 'md-ref-palette-',
+        prefix: prefix.palette
     })
 
     const ccSchemes = theme.customColors.reduce((acc, color) => ({
         ...acc,
         ...deriveCustomSchemeProperties(color, {
-            prefix: 'md-custom-color-',
+            prefix: prefix.customScheme,
             dark
         }),
         ...brightnessSuffix
             ? {
                 ...deriveCustomSchemeProperties(color, {
-                    prefix: 'md-custom-color-',
+                    prefix: prefix.customScheme,
                     suffix: '-light'
                 }),
                 ...deriveCustomSchemeProperties(color, {
-                    prefix: 'md-custom-color-',
+                    prefix: prefix.customScheme,
                     suffix: '-dark'
                 })
             }
@@ -191,20 +201,37 @@ function getProperties(theme: Theme, {
     }
 }
 
-const propertiesFromTheme = (theme: Theme, options: FormatOptions = {}) => {
+const propertiesFromTheme = (theme: Theme, options: TokenFormatOptions = {}) => {
 
-    const defaults = {
+    interface PropertiesDefaults {
+        tones: number[],
+        brightnessSuffix: boolean,
+        dark: boolean,
+        prefix: {
+            palette: string,
+            scheme: string,
+            custom: string
+        }
+    }
+
+    const defaults: PropertiesDefaults = {
         tones: [0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 95, 99, 100],
         brightnessSuffix: true,
         dark: false,
-    } as const
+        prefix: {
+            palette: 'md-ref-palette-',
+            scheme: 'md-sys-color-',
+            custom: 'md-custom-color-'
+        }
+    }
 
-    const {tones, brightnessSuffix, dark} = Object.assign({}, defaults, options)
+    const {tones, brightnessSuffix, dark, prefix} = Object.assign({}, defaults, options)
 
-    return getProperties(theme, {
+    return deriveProperties(theme, {
         tones,
         brightnessSuffix,
-        dark
+        dark,
+        prefix
     })
 }
 

@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 1.0.4
+
+### Patch Changes
+
+- 3b15830: refactor: fix README.md, arguments to main method
+
 ## 1.0.3
 
 ### Patch Changes

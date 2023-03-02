@@ -1,5 +1,15 @@
 # @webhead/material-color-properties
 
+## 2.0.0
+
+### Major Changes
+
+- 807c1fd: fix of mising arguments of propertiesFromTheme fn
+
+### Patch Changes
+
+- b31f71c: chore: replaced @material with @importantimport as peerDependency, bc bug in original package built process
+
 ## 1.0.4
 
 ### Patch Changes

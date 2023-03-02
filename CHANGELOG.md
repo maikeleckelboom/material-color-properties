@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 2.0.1
+
+### Patch Changes
+
+- dcf89b8: fix
+
 ## 2.0.0
 
 ### Major Changes

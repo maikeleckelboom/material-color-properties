@@ -7,12 +7,7 @@ import {
     TonalPalette
 } from "@importantimport/material-color-utilities"
 import {hexAFromArgb, rgbFromHex, tokenize} from "./utils";
-
-export interface TokenFormatOptions {
-    tones?: number[],
-    brightnessSuffix?: boolean,
-    dark?: boolean
-}
+import defu, {createDefu} from "defu";
 
 function derivePaletteProperties(theme: Theme, {
     tones,
@@ -116,8 +111,8 @@ function deriveProperties(theme: Theme, {
 }: {
     dark: boolean,
     tones: number[],
-    brightnessSuffix: boolean,
-    prefix: {
+    brightnessSuffix?: boolean,
+    prefix?: {
         palette?: string,
         scheme?: string,
         customScheme?: string
@@ -125,20 +120,20 @@ function deriveProperties(theme: Theme, {
 }) {
     const palettes = derivePaletteProperties(theme, {
         tones,
-        prefix: prefix.palette
+        prefix: prefix?.palette
     })
     const schemes = {
         ...deriveSchemeProperties(theme.schemes[dark ? 'dark' : 'light'], {
-            prefix: prefix.scheme
+            prefix: prefix?.scheme
         }),
         ...brightnessSuffix
             ? {
                 ...deriveSchemeProperties(theme.schemes.light, {
-                    prefix: prefix.scheme,
+                    prefix: prefix?.scheme,
                     suffix: '-light'
                 }),
                 ...deriveSchemeProperties(theme.schemes.dark, {
-                    prefix: prefix.scheme,
+                    prefix: prefix?.scheme,
                     suffix: '-dark'
                 })
             }
@@ -146,16 +141,16 @@ function deriveProperties(theme: Theme, {
     }
     const surfaceElevations = {
         ...deriveSurfaceElevationProperties(theme.source, {
-            prefix: prefix.scheme,
+            prefix: prefix?.scheme,
         }),
         ...brightnessSuffix
             ? {
                 ...deriveSurfaceElevationProperties(theme.source, {
-                    prefix: prefix.scheme,
+                    prefix: prefix?.scheme,
                     suffix: '-light'
                 }),
                 ...deriveSurfaceElevationProperties(theme.source, {
-                    prefix: prefix.scheme,
+                    prefix: prefix?.scheme,
                     suffix: '-dark'
                 })
             }
@@ -164,24 +159,24 @@ function deriveProperties(theme: Theme, {
 
     const ccPalettes = deriveCustomPaletteProperties(theme.customColors, {
         tones,
-        prefix: prefix.palette,
+        prefix: prefix?.palette,
         sourceColor: theme.source
     })
 
     const ccSchemes = theme.customColors.reduce((acc, color) => ({
         ...acc,
         ...deriveCustomSchemeProperties(color, {
-            prefix: prefix.customScheme,
+            prefix: prefix?.customScheme,
             dark
         }),
         ...brightnessSuffix
             ? {
                 ...deriveCustomSchemeProperties(color, {
-                    prefix: prefix.customScheme,
+                    prefix: prefix?.customScheme,
                     suffix: '-light'
                 }),
                 ...deriveCustomSchemeProperties(color, {
-                    prefix: prefix.customScheme,
+                    prefix: prefix?.customScheme,
                     suffix: '-dark'
                 })
             }
@@ -203,42 +198,34 @@ function deriveProperties(theme: Theme, {
     }
 }
 
-interface FormatOptions {
-    tones: number[],
+interface PropertiesOptions {
     brightnessSuffix: boolean,
     dark: boolean,
+    tones: number[],
     prefix: {
         palette: string,
-        scheme: string,
-        custom: string
+        color: string,
+        customColor: string,
     }
 }
 
-type ALlToOptional<T> = {
+
+type Optional<T> = {
     [P in keyof T]?: T[P]
 }
-
-const propertiesFromTheme = (theme: Theme, options?: ALlToOptional<FormatOptions>) => {
-
-    const defaults: FormatOptions = {
-        tones: [0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 95, 99, 100],
+const propertiesFromTheme = (theme: Theme, args: Optional<PropertiesOptions> = {}) => {
+    const defaults: PropertiesOptions = {
+        tones: [0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
         dark: false,
         brightnessSuffix: true,
         prefix: {
             palette: 'md-ref-palette-',
-            scheme: 'md-sys-color-',
-            custom: 'md-custom-color-'
+            color: 'md-sys-color-',
+            customColor: 'md-custom-color-'
         },
     }
-
-    const {tones, brightnessSuffix, dark, prefix} = Object.assign({}, defaults, options ?? {})
-
-    return deriveProperties(theme, {
-        tones,
-        brightnessSuffix,
-        dark,
-        prefix
-    })
+    const options = defu(args, defaults)
+    return deriveProperties(theme, options)
 }
 
 export {

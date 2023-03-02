@@ -5,7 +5,6 @@ This package streamlines the process of accessing properties from the Material D
 ## Note
 As of today, this package is only compatible with the `@importantimport/material-color-utilities` package. In future this will change to be compatible with the original `@material/material-color-utilities` package from the Material Design team.
 
-
 ## Quick Setup
 
 1. Add `@webhead/material-color-properties` dependency to your project, also add `@importantimport/material-color-utilities` if you haven't already.

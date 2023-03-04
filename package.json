@@ -1,12 +1,7 @@
 {
   "name": "@webhead/material-color-properties",
-<<<<<<< HEAD
   "description": "This package streamlines the process of accessing properties from the Material Design 3 theme definition. The main motivation behind this package is to provide compatibility with server-side rendering (SSR). By providing convenient access to color properties, developers can save time and effort without sacrificing the ability to render their application on the server.",
-  "version": "2.1.1",
-=======
-  "description": "This package streamlines the process of accessing properties from the Material Design 3 theme definition. By providing convenient access to color schemes, typography, and layout attributes, developers can save time and effort while ensuring consistent and cohesive user experiences.",
   "version": "2.1.2",
->>>>>>> 1419cf8d43292b71bb87501ddf108402115baec9
   "private": false,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -22,12 +17,9 @@
   "keywords": [],
   "author": "Maikel Eckelboom",
   "license": "ISC",
-  "peerDependencies": {
-    "@importantimport/material-color-utilities": "0.2.2"
-  },
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
-    "@importantimport/material-color-utilities": "0.2.2",
+    "@importantimport/material-color-utilities": "0.2.2-alpha.0",
     "@types/node": "^18.14.1",
     "tsup": "^6.6.3",
     "typescript": "^4.9.5",

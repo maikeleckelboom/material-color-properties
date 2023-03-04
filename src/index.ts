@@ -1,13 +1,15 @@
 import {
+    argbFromHex,
     Blend,
     CustomColorGroup,
     hexFromArgb,
     Scheme,
     Theme,
+    themeFromSourceColor,
     TonalPalette
 } from "@importantimport/material-color-utilities"
 import {hexAFromArgb, rgbFromHex, tokenize} from "./utils";
-import defu, {createDefu} from "defu";
+import defu from "defu";
 
 function derivePaletteProperties(theme: Theme, {
     tones,
@@ -77,7 +79,7 @@ function deriveCustomSchemeProperties(colorGroup: CustomColorGroup, options?: {
 }) {
     const properties = {} as Record<string, string>
     for (const [key, value] of Object.entries(colorGroup[options?.dark ? 'dark' : 'light'])) {
-        const name = colorGroup.color.name.replace(/^\W+|\W+$|\s/g, '-').toLowerCase()
+        const name = tokenize(colorGroup.color.name)
         const map = key.replace(/([a-z])(?=[A-Z])/g, '$1-').toLowerCase()
         const token = map.replace(/color/, name)
         properties[`--${options?.prefix ?? ''}${token}${options?.suffix ?? ''}`] = hexFromArgb(value as number)
@@ -114,8 +116,8 @@ function deriveProperties(theme: Theme, {
     brightnessSuffix?: boolean,
     prefix?: {
         palette?: string,
-        scheme?: string,
-        customScheme?: string
+        color?: string,
+        customColor?: string
     }
 }) {
     const palettes = derivePaletteProperties(theme, {
@@ -124,16 +126,16 @@ function deriveProperties(theme: Theme, {
     })
     const schemes = {
         ...deriveSchemeProperties(theme.schemes[dark ? 'dark' : 'light'], {
-            prefix: prefix?.scheme
+            prefix: prefix?.color
         }),
         ...brightnessSuffix
             ? {
                 ...deriveSchemeProperties(theme.schemes.light, {
-                    prefix: prefix?.scheme,
+                    prefix: prefix?.color,
                     suffix: '-light'
                 }),
                 ...deriveSchemeProperties(theme.schemes.dark, {
-                    prefix: prefix?.scheme,
+                    prefix: prefix?.color,
                     suffix: '-dark'
                 })
             }
@@ -141,16 +143,16 @@ function deriveProperties(theme: Theme, {
     }
     const surfaceElevations = {
         ...deriveSurfaceElevationProperties(theme.source, {
-            prefix: prefix?.scheme,
+            prefix: prefix?.color,
         }),
         ...brightnessSuffix
             ? {
                 ...deriveSurfaceElevationProperties(theme.source, {
-                    prefix: prefix?.scheme,
+                    prefix: prefix?.color,
                     suffix: '-light'
                 }),
                 ...deriveSurfaceElevationProperties(theme.source, {
-                    prefix: prefix?.scheme,
+                    prefix: prefix?.color,
                     suffix: '-dark'
                 })
             }
@@ -166,17 +168,17 @@ function deriveProperties(theme: Theme, {
     const ccSchemes = theme.customColors.reduce((acc, color) => ({
         ...acc,
         ...deriveCustomSchemeProperties(color, {
-            prefix: prefix?.customScheme,
+            prefix: prefix?.customColor,
             dark
         }),
         ...brightnessSuffix
             ? {
                 ...deriveCustomSchemeProperties(color, {
-                    prefix: prefix?.customScheme,
+                    prefix: prefix?.customColor,
                     suffix: '-light'
                 }),
                 ...deriveCustomSchemeProperties(color, {
-                    prefix: prefix?.customScheme,
+                    prefix: prefix?.customColor,
                     suffix: '-dark'
                 })
             }
@@ -198,39 +200,49 @@ function deriveProperties(theme: Theme, {
     }
 }
 
-interface PropertiesOptions {
-    brightnessSuffix: boolean,
-    dark: boolean,
-    tones: number[],
-    prefix: {
-        palette: string,
-        color: string,
-        customColor: string,
+interface Config {
+    brightnessSuffix?: boolean,
+    dark?: boolean,
+    tones?: number[],
+    prefix?: {
+        palette?: string,
+        color?: string,
+        customColor?: string,
     }
 }
 
+type Properties = Record<string, string>
 
-type Optional<T> = {
-    [P in keyof T]?: T[P]
+type RequiredDeep<T> = {
+    [P in keyof T]-?: RequiredDeep<T[P]>
 }
-const propertiesFromTheme = (theme: Theme, args: Optional<PropertiesOptions> = {}) => {
-    const defaults: PropertiesOptions = {
+
+const propertiesFromTheme = (theme: Theme, options?: Config): Properties => {
+    const defaultConfig: RequiredDeep<Config> = {
         tones: [0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
         dark: false,
         brightnessSuffix: true,
         prefix: {
             palette: 'md-ref-palette-',
             color: 'md-sys-color-',
-            customColor: 'md-custom-color-'
-        },
+            customColor: 'md-custom-color-',
+        }
     }
-    const options = defu(args, defaults)
-    return deriveProperties(theme, options)
+    return deriveProperties(theme, {
+        ...defaultConfig,
+        ...options,
+        prefix: {
+            ...defaultConfig.prefix,
+            ...(options?.prefix ?? {}),
+        }
+    })
 }
+
 
 export {
     propertiesFromTheme,
     hexAFromArgb,
     rgbFromHex,
-    tokenize
+    tokenize,
+    Properties
 }

@@ -17,3 +17,4 @@ const theme: Theme = themeFromSourceColor(argbFromHex("#15466e"), [
 const properties = propertiesFromTheme(theme);
 
 console.log(properties);
+

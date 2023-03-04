@@ -17,7 +17,7 @@ describe("index", () => {
         }
     ]
 
-    const theme = themeFromSourceColor(sourceColor)
+    const theme = themeFromSourceColor(sourceColor, customColors)
 
     describe("When propertiesFromTheme is called without optional arguments", () => {
         const properties = propertiesFromTheme(theme)
@@ -73,17 +73,18 @@ describe("index", () => {
                 color: 'test-color-'
             }
         })
+
         it("it should return an object with custom prefix", () => {
             expect(propertiesWithCustomPrefix).toHaveProperty('--test-color-primary')
         })
     })
 
     describe("When the theme object contains custom colors", () => {
-        const themeWithCustomColors = themeFromSourceColor(sourceColor, customColors)
-        const propertiesWithCustomColors = propertiesFromTheme(themeWithCustomColors)
+        const propertiesWithCustomColors = propertiesFromTheme(theme)
 
         it("should have properties for custom colors", () => {
-            expect(propertiesWithCustomColors).toHaveProperty('--md-custom-color-custom-color2')
+            expect(propertiesWithCustomColors)
+                .toHaveProperty('--md-custom-color-custom-color2')
         })
 
         it("should have RGB variant properties for customColor", () => {

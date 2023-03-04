@@ -123,7 +123,7 @@ function rgbProperties(properties: Record<string, string>) {
  * @param {CustomColorGroup} customColor - A CustomColorGroup object representing the base color of the palette.
  * @param {object} options - An options object containing the tones and sourceColor properties.
  * @param {number[]} options.tones - An array of tones to apply to the palette.
- * @param {number} options.sourceColor - The source color to use for blending if the base color is a blend.
+ * @param {number} options.sourceColor - The source color to use for blending if blend is true.
  * @returns {TonalPalette} The derived tonal palette.
  */
 function paletteFromCustomColor(customColor: CustomColorGroup, {
@@ -179,7 +179,7 @@ function deriveCustomPaletteProperties(customColors: CustomColorGroup[], {
     for (const customColor of customColors) {
         const palette = paletteFromCustomColor(customColor, {tones, sourceColor})
         tones.forEach((tone: number) => {
-            const name = customColor.color.name.replace(/^\W+|\W+$|\s/g, '-').toLowerCase()
+            const name = tokenize(customColor.color.name)
             const token = `--${prefix ?? ''}${name}${tone}${suffix ?? ''}`
             properties[token] = hexFromArgb(palette.tone(tone))
         })

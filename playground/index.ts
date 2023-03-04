@@ -1,5 +1,5 @@
 import {propertiesFromTheme} from "../src";
-import {argbFromHex, Theme, themeFromSourceColor} from "@importantimport/material-color-utilities";
+import {argbFromHex, Theme, themeFromSourceColor} from "@material/material-color-utilities";
 
 const theme: Theme = themeFromSourceColor(argbFromHex("#15466e"), [
     {

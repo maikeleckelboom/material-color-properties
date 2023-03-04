@@ -1,5 +1,5 @@
 import {describe, it, expect, test} from "vitest";
-import {argbFromHex, themeFromSourceColor} from "@importantimport/material-color-utilities";
+import {argbFromHex, themeFromSourceColor} from "@material/material-color-utilities";
 import {propertiesFromTheme} from "../src";
 
 describe("index", () => {

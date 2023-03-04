@@ -1,20 +1,56 @@
 import {
-    argbFromHex,
     Blend,
     CustomColorGroup,
     hexFromArgb,
     Scheme,
     Theme,
-    themeFromSourceColor,
     TonalPalette
 } from "@importantimport/material-color-utilities"
 import {hexAFromArgb, rgbFromHex, tokenize} from "./utils";
-import defu from "defu";
 
+/**
+ * Defines a configuration object that can have optional properties for a color palette.
+ *
+ * @typedef {Object} ConfigOptions
+ */
+interface ConfigOptions {
+    // Whether to append a suffix to color names that indicate their brightness level.
+    brightnessSuffix?: boolean,
+    // Whether the configuration is for a dark mode.
+    dark?: boolean,
+    // An array of numbers representing the tones to be used in the color palette.
+    tones?: number[],
+    // An object that can have optional properties for the name of the palette,
+    // the name of the base color, and a custom color.
+    prefix?: {
+        palette?: string,
+        color?: string,
+        customColor?: string,
+    }
+}
+
+// A utility type that defines an object with string keys and string values.
+type Properties = Record<string, string>
+
+// A utility type that recursively makes all properties of an object required.
+type RequiredDeep<T> = {
+    [P in keyof T]-?: RequiredDeep<T[P]>
+}
+
+// A type that is derived from `ConfigOptions` and makes all its properties required.
+type DefaultConfig = RequiredDeep<ConfigOptions>
+
+/**
+ * @param {Theme} theme - The theme to derive custom properties from
+ * @param {Object} options - An object containing optional properties for customizing the derived properties
+ * @param {Array<number>} options.tones - An array of numbers representing the tones to derive custom properties for
+ * @param {string} [options.prefix] - An optional prefix to add to the beginning of each derived custom property name
+ * @returns {Properties} An object with CSS custom properties derived from the theme
+ */
 function derivePaletteProperties(theme: Theme, {
     tones,
     prefix
-}: { tones: number[], prefix?: string }) {
+}: { tones: number[], prefix?: string }): Properties {
     const properties = {} as Record<string, string>
     for (const [key, value] of Object.entries(theme.palettes)) {
         const tonalPalette = value instanceof TonalPalette ? value : TonalPalette.fromInt(value)
@@ -25,10 +61,16 @@ function derivePaletteProperties(theme: Theme, {
     return properties
 }
 
+/**
+ * @param scheme The color scheme to derive properties from.
+ * @param prefix An optional prefix to add to each custom property.
+ * @param suffix An optional suffix to add to each custom property.
+ * @returns An object with CSS custom properties derived from the color scheme.
+ */
 function deriveSchemeProperties(scheme: Scheme, {
     prefix,
     suffix
-}: { prefix?: string, suffix?: string }) {
+}: { prefix?: string, suffix?: string }): Properties {
     const properties = {} as Record<string, string>
     const entries = Object.entries(typeof scheme?.toJSON === 'function' ? scheme.toJSON() : scheme)
     for (const [key, value] of entries) {
@@ -37,6 +79,10 @@ function deriveSchemeProperties(scheme: Scheme, {
     return properties
 }
 
+/**
+ * @param argb The color to derive properties from.
+ * @param options An object with optional properties for a prefix, suffix, and tones.
+ */
 function deriveSurfaceElevationProperties(argb: number, options: {
     prefix?: string,
     suffix?: string,
@@ -52,6 +98,10 @@ function deriveSurfaceElevationProperties(argb: number, options: {
     return properties
 }
 
+/**
+ * @param {Record<string, string>} properties - A Record object containing CSS custom properties with hex color values.
+ * @returns {Record<string, string>} A new Record object with CSS custom properties and their corresponding RGB color values.
+ */
 function rgbProperties(properties: Record<string, string>) {
     return Object.entries(properties).reduce((acc, [name, hex]) => ({
         ...acc,
@@ -59,6 +109,13 @@ function rgbProperties(properties: Record<string, string>) {
     }), {} as Record<string, string>)
 }
 
+/**
+ * @param {CustomColorGroup} customColor - A CustomColorGroup object representing the base color of the palette.
+ * @param {object} options - An options object containing the tones and sourceColor properties.
+ * @param {number[]} options.tones - An array of tones to apply to the palette.
+ * @param {number} options.sourceColor - The source color to use for blending if the base color is a blend.
+ * @returns {TonalPalette} The derived tonal palette.
+ */
 function paletteFromCustomColor(customColor: CustomColorGroup, {
     tones,
     sourceColor
@@ -72,6 +129,14 @@ function paletteFromCustomColor(customColor: CustomColorGroup, {
     return tonalPalette
 }
 
+/**
+ * @param {CustomColorGroup} colorGroup - The color group to derive properties for.
+ * @param {object} [options] - Optional configuration for prefix, suffix, and dark mode.
+ * @param {string} [options.prefix] - Optional prefix to prepend to each CSS custom property name.
+ * @param {string} [options.suffix] - Optional suffix to append to each CSS custom property name.
+ * @param {boolean} [options.dark] - Optional boolean flag indicating whether to use the "dark" color scheme.
+ * @returns {Record<string, string>} - Object containing CSS custom property names and values.
+ */
 function deriveCustomSchemeProperties(colorGroup: CustomColorGroup, options?: {
     suffix?: string,
     prefix?: string,
@@ -87,6 +152,13 @@ function deriveCustomSchemeProperties(colorGroup: CustomColorGroup, options?: {
     return properties
 }
 
+/**
+ * @param customColors An array of CustomColorGroup objects.
+ * @param tones An array of numbers representing the tones to derive custom properties for.
+ * @param prefix An optional prefix to prepend to each custom property name.
+ * @param suffix An optional suffix to append to each custom property name.
+ * @param sourceColor The source color to use for blending if the base color is a blend.
+ */
 function deriveCustomPaletteProperties(customColors: CustomColorGroup[], {
     tones,
     prefix,
@@ -105,6 +177,13 @@ function deriveCustomPaletteProperties(customColors: CustomColorGroup[], {
     return properties
 }
 
+/**
+ * @param {Theme} theme - A Theme object.
+ * @param {object} options - An options object containing the tones and prefix properties.
+ * @param {number[]} options.tones - An array of tones to apply to the palette.
+ * @param {string} options.prefix - A prefix to prepend to each CSS custom property name.
+ * @returns {Record<string, string>} - Object containing CSS custom property names and values.
+ */
 function deriveProperties(theme: Theme, {
     dark,
     tones,
@@ -200,25 +279,20 @@ function deriveProperties(theme: Theme, {
     }
 }
 
-interface Config {
-    brightnessSuffix?: boolean,
-    dark?: boolean,
-    tones?: number[],
-    prefix?: {
-        palette?: string,
-        color?: string,
-        customColor?: string,
-    }
-}
-
-type Properties = Record<string, string>
-
-type RequiredDeep<T> = {
-    [P in keyof T]-?: RequiredDeep<T[P]>
-}
-
-const propertiesFromTheme = (theme: Theme, options?: Config): Properties => {
-    const defaultConfig: RequiredDeep<Config> = {
+/**
+ * @param {Theme} theme - A Theme object.
+ * @param {object} [options] - Optional configuration for prefix, suffix, and dark mode.
+ * @param {string} [options.prefix] - Optional prefix to prepend to each CSS custom property name.
+ * @param {string} [options.suffix] - Optional suffix to append to each CSS custom property name.
+ * @param {boolean} [options.dark] - Optional boolean flag indicating whether to use the "dark" color scheme.
+ * @returns {Record<string, string>} - Object containing CSS custom property names and values.
+ *
+ * @example
+ * const theme = themeFromSourceColor(argbFromHex('#ff0000'))
+ * const properties = propertiesFromTheme(theme)
+ */
+const propertiesFromTheme = (theme: Theme, options?: ConfigOptions): Properties => {
+    const defaultConfig: DefaultConfig = {
         tones: [0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
         dark: false,
         brightnessSuffix: true,
@@ -238,11 +312,9 @@ const propertiesFromTheme = (theme: Theme, options?: Config): Properties => {
     })
 }
 
-
 export {
     propertiesFromTheme,
     hexAFromArgb,
     rgbFromHex,
     tokenize,
-    Properties
 }

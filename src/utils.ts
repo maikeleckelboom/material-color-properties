@@ -1,4 +1,4 @@
-import {hexFromArgb} from "@importantimport/material-color-utilities";
+import {hexFromArgb} from "@material/material-color-utilities";
 
 /**
  * Tokenizes a string by replacing any occurrences of camelCase with hyphen-separated words.

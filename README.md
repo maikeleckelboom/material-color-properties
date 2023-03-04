@@ -2,49 +2,62 @@
 
 This package streamlines the process of accessing properties from the Material Design 3 theme.
 
-## Note
-As of today, this package is only compatible with the `@importantimport/material-color-utilities` package. In future this will change to be compatible with the original `@material/material-color-utilities` package from the Material Design team.
+[//]: # (## Note)
+
+[//]: # (As of today, this package is only compatible with the `@material/material-color-utilities` package. In future this will change to be compatible with the original `@material/material-color-utilities` package from the Material Design team.)
 
 ## Quick Setup
 
-1. Add `@webhead/material-color-properties` dependency to your project, also add `@importantimport/material-color-utilities` if you haven't already.
+1. Add `@webhead/material-color-properties` dependency to your project, also add `@material/material-color-utilities` if
+   you haven't already.
 
 ```bash
 # Using pnpm
-pnpm add @importantimport/material-color-utilities @webhead/material-color-properties
+pnpm add @material/material-color-utilities @webhead/material-color-properties
 
 # Using yarn
-yarn add @importantimport/material-color-utilities @webhead/material-color-properties
+yarn add @material/material-color-utilities @webhead/material-color-properties
 
 # Using npm
-npm install @importantimport/material-color-utilities @webhead/material-color-properties
+npm install @material/material-color-utilities @webhead/material-color-properties
 ```
 
 ## Example
+
 ### Getting the theme via the `themeFromSourceColor` function
+
 ```ts
-import {argbFromHex, CustomColor, Theme, themeFromSourceColor} from "@importantimport/material-color-utilities";
+import {argbFromHex, CustomColor, Theme, themeFromSourceColor} from "@material/material-color-utilities";
 
 const theme: Theme = themeFromSourceColor(argbFromHex('#ff0088'), [
     {
-      name: 'Arab Green',
-      value: '#22a45a',
-      blend: true,
+        name: 'Arab Green',
+        value: '#22a45a',
+        blend: true,
     }
 ])
 ```
 
 ### Getting the properties via the `propertiesFromTheme` function
+
 ```ts
 import {propertiesFromTheme} from '@webhead/material-color-properties'
 
+// Default options (optional)
 const properties = propertiesFromTheme(theme, {
-    dark: false,
-    brightnessSuffix: true,
-    tones: [0, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 95, 99, 100]
-})
+   tones: [0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+   dark: false,
+   brightnessSuffix: true,
+   prefix: {
+      palette: 'md-ref-palette-',
+      color: 'md-sys-color-',
+      customColor: 'md-custom-color-',
+   }
+}) 
 ```
+
 ### Example Output
+
 ```
 {
     // Palette Primary

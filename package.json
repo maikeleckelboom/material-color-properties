@@ -17,17 +17,16 @@
   "keywords": [],
   "author": "Maikel Eckelboom",
   "license": "ISC",
+  "peerDependencies": {
+    "@material/material-color-utilities": "latest"
+  },
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
-    "@importantimport/material-color-utilities": "latest",
+    "@material/material-color-utilities": "latest",
     "@types/node": "^18.14.1",
-    "defu": "^6.1.2",
     "tsup": "^6.6.3",
     "typescript": "^4.9.5",
     "vite": "^4.1.4",
     "vitest": "^0.28.5"
-  },
-  "dependencies": {
-    "merge-anything": "4.0.2"
   }
 }

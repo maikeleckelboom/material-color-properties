@@ -5,12 +5,13 @@ import {
     Scheme,
     Theme,
     TonalPalette
-} from "@importantimport/material-color-utilities"
+} from "@material/material-color-utilities";
+
 import {hexAFromArgb, rgbFromHex, tokenize} from "./utils";
 
 /**
- * Defines a configuration object that can have optional properties for a color palette.
- *
+ * Defines a configuration object that can
+ * have optional properties for a color palette.
  * @typedef {Object} ConfigOptions
  */
 interface ConfigOptions {
@@ -29,15 +30,24 @@ interface ConfigOptions {
     }
 }
 
-// A utility type that defines an object with string keys and string values.
+/**
+ * A utility type that defines the properties of a CSS custom property.
+ * @typedef {Object<string, string>} Properties
+ */
 type Properties = Record<string, string>
 
-// A utility type that recursively makes all properties of an object required.
+/**
+ * A utility type that recursively makes all properties of an object required.
+ * @typedef {Object} RequiredDeep
+ */
 type RequiredDeep<T> = {
     [P in keyof T]-?: RequiredDeep<T[P]>
 }
 
-// A type that is derived from `ConfigOptions` and makes all its properties required.
+/**
+ * A type that is derived from `ConfigOptions` and makes all its properties required.
+ * @typedef {Object} DefaultConfig
+ */
 type DefaultConfig = RequiredDeep<ConfigOptions>
 
 /**
@@ -286,10 +296,11 @@ function deriveProperties(theme: Theme, {
  * @param {string} [options.suffix] - Optional suffix to append to each CSS custom property name.
  * @param {boolean} [options.dark] - Optional boolean flag indicating whether to use the "dark" color scheme.
  * @returns {Record<string, string>} - Object containing CSS custom property names and values.
- *
  * @example
  * const theme = themeFromSourceColor(argbFromHex('#ff0000'))
+ * // => { source: 4294901760, schemes: { light: { ... }, dark: { ... } } }
  * const properties = propertiesFromTheme(theme)
+ * // => { '--md-ref-palette-primary100': '#ffffff', '--md-sys-color-primary': '#ff0000', ... }
  */
 const propertiesFromTheme = (theme: Theme, options?: ConfigOptions): Properties => {
     const defaultConfig: DefaultConfig = {

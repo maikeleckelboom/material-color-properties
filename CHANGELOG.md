@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 2.1.0
+
+### Minor Changes
+
+- 9f5da87: Added tests for main functionality
+
 ## 2.0.2
 
 ### Patch Changes

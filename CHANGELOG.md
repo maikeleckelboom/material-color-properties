@@ -1,5 +1,13 @@
 # @webhead/material-color-properties
 
+## 2.1.2
+
+### Patch Changes
+
+- 47800d2: fix of wrong import
+- 3bc6188: revert of change to @material
+- c9d3c06: revert of change to @material
+
 ## 2.1.1
 
 ### Patch Changes

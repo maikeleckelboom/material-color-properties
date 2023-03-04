@@ -2,7 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@changesets/cli': ^2.26.0
-  '@material/material-color-utilities': latest
+  '@importantimport/material-color-utilities': latest
   '@types/node': ^18.14.1
   tsup: ^6.6.3
   typescript: ^4.9.5
@@ -11,7 +11,7 @@ specifiers:
 
 devDependencies:
   '@changesets/cli': 2.26.0
-  '@material/material-color-utilities': 0.2.3
+  '@importantimport/material-color-utilities': 0.2.2-alpha.0
   '@types/node': 18.14.2
   tsup: 6.6.3_typescript@4.9.5
   typescript: 4.9.5
@@ -628,6 +628,11 @@ packages:
     dev: true
     optional: true
 
+  /@importantimport/material-color-utilities/0.2.2-alpha.0:
+    resolution: {integrity: sha512-/481q5LRZxr4xFGH++WpTMumCACDTAOZZK+cWrVx95hZ7c0v9q2uVPD/DkP0+iOPUwAxvGWshMPHER3gu1TzHw==}
+    requiresBuild: true
+    dev: true
+
   /@manypkg/find-root/1.1.0:
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
     dependencies:
@@ -646,10 +651,6 @@ packages:
       fs-extra: 8.1.0
       globby: 11.1.0
       read-yaml-file: 1.1.0
-    dev: true
-
-  /@material/material-color-utilities/0.2.3:
-    resolution: {integrity: sha512-+W5lf7NfKWaHc2A/c23or1i++zMqomz2y9HBBvbDydlK+6I89EBxgxbJqzj6BQOOR09Y6Cl7x7LshdR+s1Gk7Q==}
     dev: true
 
   /@nodelib/fs.scandir/2.1.5:

@@ -5,7 +5,7 @@ import {
     Scheme,
     Theme,
     TonalPalette
-} from "@material/material-color-utilities";
+} from "@importantimport/material-color-utilities";
 
 import {hexAFromArgb, rgbFromHex, tokenize} from "./utils";
 

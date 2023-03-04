@@ -1,9 +1,22 @@
-import {describe, it, expect, vitest} from "vitest";
+import {describe, it, expect, test} from "vitest";
 import {argbFromHex, themeFromSourceColor} from "@importantimport/material-color-utilities";
 import {propertiesFromTheme} from "../src";
 
 describe("index", () => {
     const sourceColor = argbFromHex('#40a673')
+    const customColors = [
+        {
+            name: 'customColor1',
+            value: argbFromHex('#40a673'),
+            blend: true,
+        },
+        {
+            name: 'customColor2',
+            value: argbFromHex('#40a673'),
+            blend: true,
+        }
+    ]
+
     const theme = themeFromSourceColor(sourceColor)
 
     describe("When propertiesFromTheme is called without optional arguments", () => {
@@ -46,7 +59,7 @@ describe("index", () => {
         const propertiesWithDark = propertiesFromTheme(theme, {
             dark: true
         })
-        
+
         it("should return an object with dark", () => {
             expect(propertiesWithDark).toHaveProperty('--md-sys-color-primary-dark')
         })
@@ -66,19 +79,7 @@ describe("index", () => {
     })
 
     describe("When the theme object contains custom colors", () => {
-        const themeWithCustomColors = themeFromSourceColor(sourceColor, [
-            {
-                name: 'customColor1',
-                value: argbFromHex('#40a673'),
-                blend: true,
-            },
-            {
-                name: 'customColor2',
-                value: argbFromHex('#40a673'),
-                blend: true,
-            }
-        ])
-
+        const themeWithCustomColors = themeFromSourceColor(sourceColor, customColors)
         const propertiesWithCustomColors = propertiesFromTheme(themeWithCustomColors)
 
         it("should have properties for custom colors", () => {
@@ -91,39 +92,5 @@ describe("index", () => {
     })
 })
 
-/*
-describe('derivePaletteProperties', () => {
-    const sourceColor = 0x40a673
-    const theme = themeFromSourceColor(sourceColor)
-
-    test('returns empty object if tones array is empty', () => {
-        const result = derivePaletteProperties(theme, {tones: []})
-        expect(result).toEqual({})
-    })
 
 
-    test('returns expected properties when prefix is undefined', () => {
-        const result = derivePaletteProperties(theme, {tones: [100]})
-        expect(result).toEqual({
-            '--primary100': '#ffffff',
-            '--secondary100': '#ffffff',
-            '--tertiary100': '#ffffff',
-            '--neutral100': '#ffffff',
-            '--neutral-variant100': '#ffffff',
-            '--error100': '#ffffff'
-        })
-    })
-
-    test('returns expected properties when prefix is defined', () => {
-        const result = derivePaletteProperties(theme, {tones: [100], prefix: 'prefix-'})
-        expect(result).toEqual({
-            '--prefix-primary100': '#ffffff',
-            '--prefix-secondary100': '#ffffff',
-            '--prefix-tertiary100': '#ffffff',
-            '--prefix-neutral100': '#ffffff',
-            '--prefix-neutral-variant100': '#ffffff',
-            '--prefix-error100': '#ffffff'
-        })
-    })
-})
-*/

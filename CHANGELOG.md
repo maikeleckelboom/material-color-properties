@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 2.1.3
+
+### Patch Changes
+
+- 331828f: Fix of wrong formatting for custom palette color property
+
 ## 2.1.2
 
 ### Patch Changes

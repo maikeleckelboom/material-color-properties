@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 2.1.4
+
+### Patch Changes
+
+- a1c8d15: chore: removed package as strict peerDependency and changed internal usage back to @material
+
 ## 2.1.3
 
 ### Patch Changes

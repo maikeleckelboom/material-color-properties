@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 2.1.5
+
+### Patch Changes
+
+- 30926aa: feat: added option for rgb formatting
+
 ## 2.1.4
 
 ### Patch Changes

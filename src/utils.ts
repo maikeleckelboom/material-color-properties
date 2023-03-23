@@ -6,7 +6,7 @@ import {hexFromArgb} from "@material/material-color-utilities";
  * @param {string} str The string to tokenize.
  * @returns {string} The tokenized string.
  */
- const tokenize = (str: string) => str
+const tokenize = (str: string) => str
     .replace(/([a-z])([A-Z])/g, '$1-$2')
     .toLowerCase()
 
@@ -16,7 +16,7 @@ import {hexFromArgb} from "@material/material-color-utilities";
  * @param {string} str The string to capitalize.
  * @returns {string} The capitalized string.
  */
- const capitalize = (str: string) => str
+const capitalize = (str: string) => str
     .charAt(0)
     .toUpperCase() + str.slice(1)
 
@@ -26,7 +26,7 @@ import {hexFromArgb} from "@material/material-color-utilities";
  * @param {string} str The string to convert.
  * @returns {string} The humanized string.
  */
- const humanize = (str: string) => str
+const humanize = (str: string) => str
     .replace(/([A-Z]|\d+)/g, ' $1')
     .replace(/^./, (str) => str.toUpperCase())
 
@@ -36,7 +36,7 @@ import {hexFromArgb} from "@material/material-color-utilities";
  * @param {string} str The string to convert.
  * @returns {string} The converted string.
  */
- const camelize = (str: string) => str
+const camelize = (str: string) => str
     .split('-')
     .map((word, index) => index === 0 ? word : capitalize(word))
     .join('')
@@ -50,11 +50,11 @@ import {hexFromArgb} from "@material/material-color-utilities";
  * @param {string} options.suffix The suffix to add to the token (default: '').
  * @returns {string} The generated contrast token.
  */
- function contrastToken(token: string, options: {
+function contrastToken(token: string, options: {
     prefix?: string
     suffix?: string
 } = {}) {
-    const { prefix = 'md-sys-color-', suffix = '' } = options
+    const {prefix = 'md-sys-color-', suffix = ''} = options
     const name = humanize(token).toLowerCase().split(' ')
 
     // Check if the token specifies a text color
@@ -79,14 +79,15 @@ import {hexFromArgb} from "@material/material-color-utilities";
 /**
  * Converts a hexadecimal color code to an RGB color value.
  * @param hex - A string representing a hexadecimal color code (e.g. "#ff0000").
+ * @param separator
  * @returns A string representing the corresponding RGB color value (e.g. "255, 0, 0").
  */
-const rgbFromHex = (hex: string) => {
+const rgbFromHex = (hex: string, separator: string|false = ',' ) => {
     // Use a regular expression to match two hexadecimal digits at a time
     // and convert each pair to a decimal integer using parseInt with radix 16
     const [r, g, b] = hex.match(/\w\w/g)?.map(x => parseInt(x, 16)) ?? [0, 0, 0]
     // Return the RGB color value as a comma-separated string
-    return `${r}, ${g}, ${b}`
+    return separator === false ? `${r} ${g} ${b}` : `${r}${separator}${g}${separator}${b}`
 }
 
 /**

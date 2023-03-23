@@ -1,6 +1,6 @@
-import {describe, expect, it, test} from "vitest";
+import {describe, expect, it,test} from "vitest";
 import {argbFromHex, themeFromSourceColor} from "@material/material-color-utilities";
-import {propertiesFromTheme} from "../src";
+import {propertiesFromTheme, rgbFromHex} from "../src";
 
 describe("index", () => {
     const sourceColor = argbFromHex('#40a673')
@@ -114,6 +114,10 @@ describe("index", () => {
             dark: true
         })
 
+        it("should return with default color", () => {
+            expect(propertiesWithDark).toHaveProperty('--md-sys-color-primary')
+        })
+
         it("should return an object with dark", () => {
             expect(propertiesWithDark).toHaveProperty('--md-sys-color-primary-dark')
         })
@@ -134,6 +138,7 @@ describe("index", () => {
 
         it("it should return an object with custom prefix", () => {
             expect(propertiesWithCustomPrefix).toHaveProperty('--test-color-primary')
+
         })
     })
 
@@ -147,6 +152,30 @@ describe("index", () => {
 
         it("should have RGB variant properties for customColor", () => {
             expect(propertiesWithCustomColors).toHaveProperty('--md-custom-color-custom-color2-rgb')
+        })
+    })
+
+    /**
+     * RGB Tests
+     */
+    describe("When rgbFromHex is called", () => {
+        it("should return a string with the correct separator", () => {
+
+            test(`given #00000 with ',' as separator, should return 0,0,0`, () => {
+                expect(rgbFromHex('#000000', ',')).toEqual('0,0,0')
+            })
+
+            test(`given #00000 with ' ' as separator, should return 0 0 0`, () => {
+                expect(rgbFromHex('#000000', ' ')).toEqual('0 0 0')
+            })
+
+            test(`given #00000 with '/' as separator, should return 0/0/0`, () => {
+                expect(rgbFromHex('#000000', '/')).toEqual('0/0/0')
+            })
+
+            test(`given #00000 without separator argument, should return 0,0,0`, () => {
+                expect(rgbFromHex('#000000')).toEqual('0,0,0')
+            })
         })
     })
 })

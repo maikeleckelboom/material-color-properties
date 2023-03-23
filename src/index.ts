@@ -1,9 +1,10 @@
 import {
+    argbFromHex,
     Blend,
     CustomColorGroup,
     hexFromArgb,
     Scheme,
-    Theme,
+    Theme, themeFromSourceColor,
     TonalPalette
 } from "@material/material-color-utilities";
 
@@ -27,6 +28,15 @@ interface ConfigOptions {
         palette?: string,
         color?: string,
         customColor?: string,
+    },
+    // rgb options config
+    rgb?: {
+        // whether to include rgb values
+        include?: boolean, // default is true
+        // whether to include alpha values
+        separator?: ',' | ' ', // default is ','
+        // name of the suffix
+        suffix?: string, // default is -rgb
     }
 }
 
@@ -110,12 +120,20 @@ function deriveSurfaceElevationProperties(argb: number, options: {
 
 /**
  * @param {Record<string, string>} properties - A Record object containing CSS custom properties with hex color values.
+ * @param separator
+ * @param suffix
  * @returns {Record<string, string>} A new Record object with CSS custom properties and their corresponding RGB color values.
  */
-function rgbProperties(properties: Record<string, string>) {
+function rgbProperties(properties: Record<string, string>, {
+    separator,
+    suffix
+}: { separator: ',' | ' ', suffix: string } = {
+    separator: ',',
+    suffix: '-rgb'
+}) {
     return Object.entries(properties).reduce((acc, [name, hex]) => ({
         ...acc,
-        [`${name}-rgb`]: rgbFromHex(hex)
+        [`${name}${suffix}`]: rgbFromHex(hex, separator)
     }), {} as Record<string, string>)
 }
 
@@ -198,15 +216,21 @@ function deriveProperties(theme: Theme, {
     dark,
     tones,
     brightnessSuffix,
-    prefix
+    prefix,
+    rgb
 }: {
     dark: boolean,
     tones: number[],
     brightnessSuffix?: boolean,
-    prefix?: {
-        palette?: string,
-        color?: string,
-        customColor?: string
+    prefix: {
+        palette: string,
+        color: string,
+        customColor: string
+    },
+    rgb: {
+        include: boolean,
+        separator: ',' | ' ',
+        suffix: string
     }
 }) {
     const palettes = derivePaletteProperties(theme, {
@@ -274,9 +298,15 @@ function deriveProperties(theme: Theme, {
             : {}
     }), {})
 
-    const schemesRgb = rgbProperties(schemes)
+    const schemesRgb = rgbProperties(schemes, {
+        separator: rgb.separator,
+        suffix: rgb.suffix
+    })
 
-    const ccSchemesRgb = rgbProperties(ccSchemes)
+    const ccSchemesRgb = rgbProperties(ccSchemes, {
+        separator: rgb.separator,
+        suffix: rgb.suffix
+    })
 
     return {
         ...palettes,
@@ -284,8 +314,8 @@ function deriveProperties(theme: Theme, {
         ...surfaceElevations,
         ...ccPalettes,
         ...ccSchemes,
-        ...schemesRgb,
-        ...ccSchemesRgb
+        ...({...rgb.include && schemesRgb}),
+        ...({...rgb.include && ccSchemesRgb}),
     }
 }
 
@@ -311,6 +341,11 @@ const propertiesFromTheme = (theme: Theme, options?: ConfigOptions): Properties 
             palette: 'md-ref-palette-',
             color: 'md-sys-color-',
             customColor: 'md-custom-color-',
+        },
+        rgb: {
+            include: true,
+            separator: ',',
+            suffix: '-rgb'
         }
     }
     return deriveProperties(theme, {
@@ -319,6 +354,10 @@ const propertiesFromTheme = (theme: Theme, options?: ConfigOptions): Properties 
         prefix: {
             ...defaultConfig.prefix,
             ...(options?.prefix ?? {}),
+        },
+        rgb: {
+            ...defaultConfig.rgb,
+            ...(options?.rgb ?? {})
         }
     })
 }
@@ -329,3 +368,9 @@ export {
     rgbFromHex,
     tokenize,
 }
+
+/*
+    const theme = themeFromSourceColor(argbFromHex('#2ea6bb'))
+    const properties = propertiesFromTheme(theme)
+    console.log(properties)
+*/

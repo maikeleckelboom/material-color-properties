@@ -6,9 +6,11 @@ import {hexFromArgb} from "@material/material-color-utilities";
  * @param {string} str The string to tokenize.
  * @returns {string} The tokenized string.
  */
-const tokenize = (str: string) => str
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .toLowerCase()
+const tokenize = (str: string) => {
+    return camelize(str)
+        .replace(/([a-z])([A-Z])/g, '$1-$2')
+        .toLowerCase()
+}
 
 /**
  * Capitalizes the first letter of a string.
@@ -36,10 +38,17 @@ const humanize = (str: string) => str
  * @param {string} str The string to convert.
  * @returns {string} The converted string.
  */
+// const camelize = (str: string) => str
+//     .split('-')
+//     .map((word, index) => index === 0 ? word : capitalize(word))
+//     .join('')
+
+// also join numbers and handle white-space
 const camelize = (str: string) => str
-    .split('-')
+    .split(/-|\s/)
     .map((word, index) => index === 0 ? word : capitalize(word))
     .join('')
+.replace(/^[A-Z]/, (str) => str.toLowerCase())
 
 /**
  * Generates a contrast token from a given key.

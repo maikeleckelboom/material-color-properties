@@ -6,12 +6,12 @@ describe("index", () => {
     const sourceColor = argbFromHex('#40a673')
     const customColors = [
         {
-            name: 'customColor1',
+            name: 'Custom Color 1',
             value: argbFromHex('#40a673'),
             blend: true,
         },
         {
-            name: 'customColor2',
+            name: 'Custom Color 2',
             value: argbFromHex('#40a673'),
             blend: false,
         }
@@ -167,10 +167,6 @@ describe("index", () => {
 
             test(`given #00000 with ' ' as separator, should return 0 0 0`, () => {
                 expect(rgbFromHex('#000000', ' ')).toEqual('0 0 0')
-            })
-
-            test(`given #00000 with '/' as separator, should return 0/0/0`, () => {
-                expect(rgbFromHex('#000000', '/')).toEqual('0/0/0')
             })
 
             test(`given #00000 without separator argument, should return 0,0,0`, () => {

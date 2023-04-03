@@ -344,7 +344,7 @@ const propertiesFromTheme = (theme: Theme, options?: ConfigOptions): Properties 
         },
         rgb: {
             include: true,
-            separator: ',',
+            separator: ' ',
             suffix: '-rgb'
         }
     }

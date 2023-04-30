@@ -38,17 +38,11 @@ const humanize = (str: string) => str
  * @param {string} str The string to convert.
  * @returns {string} The converted string.
  */
-// const camelize = (str: string) => str
-//     .split('-')
-//     .map((word, index) => index === 0 ? word : capitalize(word))
-//     .join('')
-
-// also join numbers and handle white-space
 const camelize = (str: string) => str
     .split(/-|\s/)
     .map((word, index) => index === 0 ? word : capitalize(word))
     .join('')
-.replace(/^[A-Z]/, (str) => str.toLowerCase())
+    .replace(/^[A-Z]/, (str) => str.toLowerCase())
 
 /**
  * Generates a contrast token from a given key.
@@ -91,7 +85,7 @@ function contrastToken(token: string, options: {
  * @param separator
  * @returns A string representing the corresponding RGB color value (e.g. "255, 0, 0").
  */
-const rgbFromHex = (hex: string, separator: string|false = ',' ) => {
+const rgbFromHex = (hex: string, separator: string | false = ',') => {
     // Use a regular expression to match two hexadecimal digits at a time
     // and convert each pair to a decimal integer using parseInt with radix 16
     const [r, g, b] = hex.match(/\w\w/g)?.map(x => parseInt(x, 16)) ?? [0, 0, 0]

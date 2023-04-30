@@ -11,13 +11,18 @@ describe("index", () => {
             blend: true,
         },
         {
-            name: 'Custom Color 2',
+            name: 'Indian Red',
             value: argbFromHex('#40a673'),
             blend: false,
         }
     ]
     const theme = themeFromSourceColor(sourceColor, customColors)
-    const properties = propertiesFromTheme(theme)
+    const properties = propertiesFromTheme(theme, {
+        rgb: {
+            include: true,
+            separator: ' '
+        }
+    })
 
     describe("When propertiesFromTheme is called without optional arguments", () => {
 
@@ -97,6 +102,22 @@ describe("index", () => {
             expect(properties).toHaveProperty('--md-sys-color-error-rgb')
             expect(properties).toHaveProperty('--md-sys-color-inverse-primary-rgb')
         })
+
+        it("should have rgb variant properties for palette", () => {
+            expect(properties).toHaveProperty('--md-ref-palette-primary0-rgb')
+            expect(properties).toHaveProperty('--md-ref-palette-primary10-rgb')
+            expect(properties).toHaveProperty('--md-ref-palette-primary20-rgb')
+            expect(properties).toHaveProperty('--md-ref-palette-primary30-rgb')
+            expect(properties).toHaveProperty('--md-ref-palette-primary40-rgb')
+            expect(properties).toHaveProperty('--md-ref-palette-primary50-rgb')
+            expect(properties).toHaveProperty('--md-ref-palette-primary60-rgb')
+            expect(properties).toHaveProperty('--md-ref-palette-primary70-rgb')
+            expect(properties).toHaveProperty('--md-ref-palette-primary80-rgb')
+            expect(properties).toHaveProperty('--md-ref-palette-primary90-rgb')
+            expect(properties).toHaveProperty('--md-ref-palette-primary100-rgb')
+        })
+
+
     })
 
     describe("When propertiesFromTheme is called with brightnessSuffix", () => {
@@ -147,11 +168,11 @@ describe("index", () => {
 
         it("should have properties for custom colors", () => {
             expect(propertiesWithCustomColors)
-                .toHaveProperty('--md-custom-color-custom-color2')
+                .toHaveProperty('--md-custom-color-custom-color1')
         })
 
         it("should have RGB variant properties for customColor", () => {
-            expect(propertiesWithCustomColors).toHaveProperty('--md-custom-color-custom-color2-rgb')
+            expect(propertiesWithCustomColors).toHaveProperty('--md-custom-color-indian-red-rgb')
         })
     })
 
@@ -173,6 +194,11 @@ describe("index", () => {
                 expect(rgbFromHex('#000000')).toEqual('0,0,0')
             })
         })
+    })
+
+
+    test('should have Surface Container Colors', () => {
+        expect(properties).toHaveProperty('--md-sys-color-surface-container')
     })
 })
 

@@ -14,7 +14,19 @@
     "ci": "pnpm lint && pnpm test && pnpm build",
     "release": "pnpm ci && changeset publish"
   },
-  "keywords": [],
+  "keywords": [
+    "material",
+    "design",
+    "theme",
+    "color",
+    "property",
+    "access",
+    "server",
+    "side",
+    "rendering",
+    "ssr",
+    "compatibility"
+  ],
   "author": "Maikel Eckelboom",
   "license": "ISC",
   "devDependencies": {

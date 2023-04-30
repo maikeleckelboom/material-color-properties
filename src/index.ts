@@ -205,6 +205,53 @@ function deriveCustomPaletteProperties(customColors: CustomColorGroup[], {
     return properties
 }
 
+
+// Need to add missing properties that are:
+// Surface container lowest
+// Surface container low
+// Surface container
+// Surface container high
+// Surface container highest
+
+
+function createSurfaceContainerProperties(argb: number, options: {
+    prefix?: string,
+    suffix?: string,
+}) {
+    const properties = {} as Record<string, string>
+    const propertyNames = [
+        'surface-container-lowest',
+        'surface-container-low',
+        'surface-container',
+        'surface-container-high',
+        'surface-container-highest'
+    ]
+    const tones = [0.5, 0.08, 0.11, 0.12, 0.14]
+
+    const palette = TonalPalette.fromInt(argb)
+    // map propertyNames with tones (do not make color transparent)
+    const colors = propertyNames.map((name, index) => palette.tone(tones[index]))
+    // map colors to hex
+    const hexColors = colors.map(color => hexFromArgb(color))
+    // map hexColors to tokens
+    const tokens = hexColors.map((color, index) => `--${options?.prefix ?? ''}${propertyNames[index]}${options?.suffix ?? ''}`)
+    // map tokens to properties
+    tokens.forEach((token, index) => properties[token] = hexColors[index])
+
+    console.log(
+        'properties', properties
+    )
+
+
+    // tones.forEach((tone, index) => {
+    //     const color = hexFromArgb(argb)
+    //     const token = `--${options?.prefix ?? ''}surface-level${index}${options?.suffix ?? ''}`
+    //     properties[token] = color
+    // })
+    return properties
+}
+
+
 /**
  * @param {Theme} theme - A Theme object.
  * @param {object} options - An options object containing the tones and prefix properties.
@@ -229,7 +276,7 @@ function deriveProperties(theme: Theme, {
     },
     rgb: {
         include: boolean,
-        separator: ',' | ' ',
+        separator: ',' | ' '
         suffix: string
     }
 }) {
@@ -254,6 +301,26 @@ function deriveProperties(theme: Theme, {
             }
             : {}
     }
+
+    const surfaceContainers = {
+        ...createSurfaceContainerProperties(theme.source, {
+            prefix: prefix?.color,
+        }),
+        ...brightnessSuffix
+            ? {
+                ...createSurfaceContainerProperties(theme.source, {
+                    prefix: prefix?.color,
+                    suffix: '-light'
+                }),
+                ...createSurfaceContainerProperties(theme.source, {
+                    prefix: prefix?.color,
+                    suffix: '-dark',
+                })
+            } : {}
+    }
+
+
+
     const surfaceElevations = {
         ...deriveSurfaceElevationProperties(theme.source, {
             prefix: prefix?.color,
@@ -266,7 +333,7 @@ function deriveProperties(theme: Theme, {
                 }),
                 ...deriveSurfaceElevationProperties(theme.source, {
                     prefix: prefix?.color,
-                    suffix: '-dark'
+                    suffix: '-dark',
                 })
             }
             : {}
@@ -292,11 +359,17 @@ function deriveProperties(theme: Theme, {
                 }),
                 ...deriveCustomSchemeProperties(color, {
                     prefix: prefix?.customColor,
-                    suffix: '-dark'
+                    suffix: '-dark',
+                    dark: true
                 })
             }
             : {}
     }), {})
+
+    const palettesRgb = rgbProperties(palettes, {
+        separator: rgb.separator,
+        suffix: rgb.suffix
+    })
 
     const schemesRgb = rgbProperties(schemes, {
         separator: rgb.separator,
@@ -308,16 +381,20 @@ function deriveProperties(theme: Theme, {
         suffix: rgb.suffix
     })
 
+
     return {
         ...palettes,
         ...schemes,
         ...surfaceElevations,
         ...ccPalettes,
         ...ccSchemes,
+        ...surfaceContainers,
+        ...({...rgb.include && palettesRgb}),
         ...({...rgb.include && schemesRgb}),
         ...({...rgb.include && ccSchemesRgb}),
     }
 }
+
 
 /**
  * @param {Theme} theme - A Theme object.
@@ -334,7 +411,7 @@ function deriveProperties(theme: Theme, {
  */
 const propertiesFromTheme = (theme: Theme, options?: ConfigOptions): Properties => {
     const defaultConfig: DefaultConfig = {
-        tones: [0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        tones: [0, 5, 10, 20, 30, 40, 50, 60, 70, +80, 90, 100],
         dark: false,
         brightnessSuffix: true,
         prefix: {

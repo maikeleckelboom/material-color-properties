@@ -213,43 +213,31 @@ function deriveCustomPaletteProperties(customColors: CustomColorGroup[], {
 // Surface container high
 // Surface container highest
 
-
-function createSurfaceContainerProperties(argb: number, options: {
-    prefix?: string,
-    suffix?: string,
-}) {
-    const properties = {} as Record<string, string>
-    const propertyNames = [
+const mapSurfaceTints = (
+    surfaceColor: number,
+    primaryColor: number,
+    options?: {
+        suffix?: string,
+        prefix?: string
+    }
+) => {
+    const schemeNames = [
         'surface-container-lowest',
         'surface-container-low',
         'surface-container',
         'surface-container-high',
         'surface-container-highest'
     ]
-    const tones = [0.5, 0.08, 0.11, 0.12, 0.14]
-
-    const palette = TonalPalette.fromInt(argb)
-    // map propertyNames with tones (do not make color transparent)
-    const colors = propertyNames.map((name, index) => palette.tone(tones[index]))
-    // map colors to hex
-    const hexColors = colors.map(color => hexFromArgb(color))
-    // map hexColors to tokens
-    const tokens = hexColors.map((color, index) => `--${options?.prefix ?? ''}${propertyNames[index]}${options?.suffix ?? ''}`)
-    // map tokens to properties
-    tokens.forEach((token, index) => properties[token] = hexColors[index])
-
-    console.log(
-        'properties', properties
-    )
-
-
-    // tones.forEach((tone, index) => {
-    //     const color = hexFromArgb(argb)
-    //     const token = `--${options?.prefix ?? ''}surface-level${index}${options?.suffix ?? ''}`
-    //     properties[token] = color
-    // })
-    return properties
-}
+    const tints = [0.05, 0.08, 0.11, 0.12, 0.14];
+    const prefix = options?.prefix ?? 'md-sys-color-'
+    const suffix = options?.suffix ?? ''
+    return tints.reduce((colors, tint, index) => {
+        const color = Blend.cam16Ucs(surfaceColor, primaryColor, tint)
+        const name = schemeNames[index]
+        colors[`--${prefix}${name}${suffix}`] = hexFromArgb(color)
+        return colors
+    }, {} as Record<string, string>)
+};
 
 
 /**
@@ -302,24 +290,47 @@ function deriveProperties(theme: Theme, {
             : {}
     }
 
+
+    /**
+     * @example
+     *    const surfaceContainers = mapSurfaceTints(
+     *         theme.schemes.light.surface,
+     *         theme.schemes.light.primary,
+     *         {
+     *             suffix: '-light',
+     *             prefix: prefix?.color,
+     *         }
+     *     )
+     */
+
+
+
     const surfaceContainers = {
-        ...createSurfaceContainerProperties(theme.source, {
-            prefix: prefix?.color,
-        }),
+        ...mapSurfaceTints(
+            theme.schemes[dark ? 'dark' : 'light'].surface,
+            theme.schemes[dark ? 'dark' : 'light'].primary,
+            {prefix: prefix?.color}
+        ),
         ...brightnessSuffix
             ? {
-                ...createSurfaceContainerProperties(theme.source, {
-                    prefix: prefix?.color,
-                    suffix: '-light'
-                }),
-                ...createSurfaceContainerProperties(theme.source, {
-                    prefix: prefix?.color,
-                    suffix: '-dark',
-                })
-            } : {}
+                ...mapSurfaceTints(
+                    theme.schemes.light.surface,
+                    theme.schemes.light.primary,
+                    {
+                        suffix: '-light',
+                        prefix: prefix?.color,
+                    }             ),
+                ...mapSurfaceTints(
+                    theme.schemes.dark.surface,
+                    theme.schemes.dark.primary,
+                    {
+                        suffix: '-dark',
+                        prefix: prefix?.color,
+                    }
+                )
+            }
+            : {}
     }
-
-
 
     const surfaceElevations = {
         ...deriveSurfaceElevationProperties(theme.source, {
@@ -381,6 +392,15 @@ function deriveProperties(theme: Theme, {
         suffix: rgb.suffix
     })
 
+    const surfaceContainersRgb = rgbProperties(surfaceContainers, {
+        separator: rgb.separator,
+        suffix: rgb.suffix
+    })
+
+    console.log('NEW COLORS', {
+        surfaceContainers,
+        surfaceContainersRgb
+    })
 
     return {
         ...palettes,

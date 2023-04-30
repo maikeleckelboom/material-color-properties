@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 2.1.6
+
+### Patch Changes
+
+- cb4394e: fixed issue with tokenize fn
+
 ## 2.1.5
 
 ### Patch Changes

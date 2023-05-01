@@ -197,8 +197,41 @@ describe("index", () => {
     })
 
 
-    test('should have Surface Container Colors', () => {
-        expect(properties).toHaveProperty('--md-sys-color-surface-container')
+    describe('Properties have to contain all surface container color roles', () => {
+
+        it('should have property with name of surface container', () => {
+            expect(properties).toHaveProperty('--md-sys-color-surface-container')
+        })
+
+        it('should have property with name of surface container lowest', () => {
+            expect(properties).toHaveProperty('--md-sys-color-surface-container-lowest')
+        })
+
+        it('should have property with name of surface container low', () => {
+            expect(properties).toHaveProperty('--md-sys-color-surface-container-low')
+        })
+
+        it('should have property with name of surface container lowest', () => {
+            expect(properties).toHaveProperty('--md-sys-color-surface-container-lowest')
+        })
+
+        it('should have property with name of surface container high', () => {
+            expect(properties).toHaveProperty('--md-sys-color-surface-container-high')
+        })
+
+        it('should have property with name of surface container highest', () => {
+            expect(properties).toHaveProperty('--md-sys-color-surface-container-highest')
+        })
+
+        // it('should have property with name of surface dim', () => {
+        //     expect(properties).toHaveProperty('--md-sys-color-surface-dim')
+        // })
+        //
+        // it('should have property with name of surface bright', () => {
+        //     expect(properties).toHaveProperty('--md-sys-color-surface-bright')
+        // })
+
+
     })
 })
 

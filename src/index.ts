@@ -205,15 +205,7 @@ function deriveCustomPaletteProperties(customColors: CustomColorGroup[], {
     return properties
 }
 
-
-// Need to add missing properties that are:
-// Surface container lowest
-// Surface container low
-// Surface container
-// Surface container high
-// Surface container highest
-
-const mapSurfaceTints = (
+const getSurfaceContainers = (
     surfaceColor: number,
     primaryColor: number,
     options?: {
@@ -228,9 +220,9 @@ const mapSurfaceTints = (
         'surface-container-high',
         'surface-container-highest'
     ]
-    const tints = [0.05, 0.08, 0.11, 0.12, 0.14];
     const prefix = options?.prefix ?? 'md-sys-color-'
     const suffix = options?.suffix ?? ''
+    const tints = [0.05, 0.08, 0.11, 0.12, 0.14];
     return tints.reduce((colors, tint, index) => {
         const color = Blend.cam16Ucs(surfaceColor, primaryColor, tint)
         const name = schemeNames[index]
@@ -268,10 +260,12 @@ function deriveProperties(theme: Theme, {
         suffix: string
     }
 }) {
+
     const palettes = derivePaletteProperties(theme, {
         tones,
         prefix: prefix?.palette
     })
+
     const schemes = {
         ...deriveSchemeProperties(theme.schemes[dark ? 'dark' : 'light'], {
             prefix: prefix?.color
@@ -285,66 +279,6 @@ function deriveProperties(theme: Theme, {
                 ...deriveSchemeProperties(theme.schemes.dark, {
                     prefix: prefix?.color,
                     suffix: '-dark'
-                })
-            }
-            : {}
-    }
-
-
-    /**
-     * @example
-     *    const surfaceContainers = mapSurfaceTints(
-     *         theme.schemes.light.surface,
-     *         theme.schemes.light.primary,
-     *         {
-     *             suffix: '-light',
-     *             prefix: prefix?.color,
-     *         }
-     *     )
-     */
-
-
-
-    const surfaceContainers = {
-        ...mapSurfaceTints(
-            theme.schemes[dark ? 'dark' : 'light'].surface,
-            theme.schemes[dark ? 'dark' : 'light'].primary,
-            {prefix: prefix?.color}
-        ),
-        ...brightnessSuffix
-            ? {
-                ...mapSurfaceTints(
-                    theme.schemes.light.surface,
-                    theme.schemes.light.primary,
-                    {
-                        suffix: '-light',
-                        prefix: prefix?.color,
-                    }             ),
-                ...mapSurfaceTints(
-                    theme.schemes.dark.surface,
-                    theme.schemes.dark.primary,
-                    {
-                        suffix: '-dark',
-                        prefix: prefix?.color,
-                    }
-                )
-            }
-            : {}
-    }
-
-    const surfaceElevations = {
-        ...deriveSurfaceElevationProperties(theme.source, {
-            prefix: prefix?.color,
-        }),
-        ...brightnessSuffix
-            ? {
-                ...deriveSurfaceElevationProperties(theme.source, {
-                    prefix: prefix?.color,
-                    suffix: '-light'
-                }),
-                ...deriveSurfaceElevationProperties(theme.source, {
-                    prefix: prefix?.color,
-                    suffix: '-dark',
                 })
             }
             : {}
@@ -377,6 +311,47 @@ function deriveProperties(theme: Theme, {
             : {}
     }), {})
 
+
+    const surfaceElevations = {
+        ...deriveSurfaceElevationProperties(theme.source, {
+            prefix: prefix?.color,
+        }),
+        ...brightnessSuffix
+            ? {
+                ...deriveSurfaceElevationProperties(theme.source, {
+                    prefix: prefix?.color,
+                    suffix: '-light'
+                }),
+                ...deriveSurfaceElevationProperties(theme.source, {
+                    prefix: prefix?.color,
+                    suffix: '-dark',
+                })
+            }
+            : {}
+    }
+
+    const surfaceContainers = {
+        ...getSurfaceContainers(
+            theme.schemes[dark ? 'dark' : 'light'].surface,
+            theme.schemes[dark ? 'dark' : 'light'].primary,
+            {prefix: prefix?.color}
+        ),
+        ...brightnessSuffix
+            ? {
+                ...getSurfaceContainers(
+                    theme.schemes.light.surface,
+                    theme.schemes.light.primary,
+                    {suffix: '-light', prefix: prefix?.color}
+                ),
+                ...getSurfaceContainers(
+                    theme.schemes.dark.surface,
+                    theme.schemes.dark.primary,
+                    {suffix: '-dark', prefix: prefix?.color}
+                )
+            }
+            : {}
+    }
+
     const palettesRgb = rgbProperties(palettes, {
         separator: rgb.separator,
         suffix: rgb.suffix
@@ -397,11 +372,6 @@ function deriveProperties(theme: Theme, {
         suffix: rgb.suffix
     })
 
-    console.log('NEW COLORS', {
-        surfaceContainers,
-        surfaceContainersRgb
-    })
-
     return {
         ...palettes,
         ...schemes,
@@ -409,6 +379,7 @@ function deriveProperties(theme: Theme, {
         ...ccPalettes,
         ...ccSchemes,
         ...surfaceContainers,
+        ...({...rgb.include && surfaceContainersRgb}),
         ...({...rgb.include && palettesRgb}),
         ...({...rgb.include && schemesRgb}),
         ...({...rgb.include && ccSchemesRgb}),

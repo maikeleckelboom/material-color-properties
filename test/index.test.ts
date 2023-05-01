@@ -3,7 +3,7 @@ import {argbFromHex, themeFromSourceColor} from "@material/material-color-utilit
 import {propertiesFromTheme, rgbFromHex} from "../src";
 
 describe("index", () => {
-    const sourceColor = argbFromHex('#40a673')
+    const sourceColor = argbFromHex('#4060a6')
     const customColors = [
         {
             name: 'Custom Color 1',
@@ -12,7 +12,7 @@ describe("index", () => {
         },
         {
             name: 'Indian Red',
-            value: argbFromHex('#40a673'),
+            value: argbFromHex('#a64040'),
             blend: false,
         }
     ]

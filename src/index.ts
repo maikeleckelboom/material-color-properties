@@ -209,6 +209,56 @@ const getSurfaceContainers = (
     surfaceColor: number,
     primaryColor: number,
     options?: {
+        dark?: boolean,
+        prefix?: string,
+        suffix?: string
+    },
+) => {
+
+    const roleToneMap = {
+        'surface-container-lowest': {
+            light: 100,
+            dark: 4
+        },
+        'surface-container-low': {
+            light: 96,
+            dark: 10
+        },
+        'surface-container': {
+            light: 94,
+            dark: 12
+        },
+        'surface-container-high': {
+            light: 92,
+            dark: 17
+        },
+        'surface-container-highest': {
+            light: 90,
+            dark: 22
+        },
+        'surface-dim': {
+            light: 87,
+            dark: 6
+        },
+        'surface-bright': {
+            light: 98,
+            dark: 24
+        },
+    }
+    return Object.entries(roleToneMap).reduce((acc, [role, tone]) => {
+        const color = Blend.cam16Ucs(surfaceColor, primaryColor, tone[options?.dark ? 'dark' : 'light'] / 100)
+        const name = `--${options?.prefix ?? 'md-sys-color-'}${role}${options?.suffix ?? ''}`
+        return {
+            ...acc,
+            [name]: hexFromArgb(color)
+        }
+    }, {} as Record<string, string>)
+}
+
+const getSurfaceContainers1 = (
+    surfaceColor: number,
+    primaryColor: number,
+    options?: {
         suffix?: string,
         prefix?: string
     }
@@ -313,16 +363,18 @@ function deriveProperties(theme: Theme, {
 
 
     const surfaceElevations = {
-        ...deriveSurfaceElevationProperties(theme.source, {
-            prefix: prefix?.color,
-        }),
+        ...deriveSurfaceElevationProperties(dark
+                ? theme.schemes.dark.primary
+                : theme.schemes.light.primary,
+            {prefix: prefix?.color}
+        ),
         ...brightnessSuffix
             ? {
-                ...deriveSurfaceElevationProperties(theme.source, {
+                ...deriveSurfaceElevationProperties(theme.schemes.light.primary, {
                     prefix: prefix?.color,
                     suffix: '-light'
                 }),
-                ...deriveSurfaceElevationProperties(theme.source, {
+                ...deriveSurfaceElevationProperties(theme.schemes.dark.primary, {
                     prefix: prefix?.color,
                     suffix: '-dark',
                 })
@@ -334,7 +386,7 @@ function deriveProperties(theme: Theme, {
         ...getSurfaceContainers(
             theme.schemes[dark ? 'dark' : 'light'].surface,
             theme.schemes[dark ? 'dark' : 'light'].primary,
-            {prefix: prefix?.color}
+            {dark, prefix: prefix?.color}
         ),
         ...brightnessSuffix
             ? {
@@ -346,7 +398,7 @@ function deriveProperties(theme: Theme, {
                 ...getSurfaceContainers(
                     theme.schemes.dark.surface,
                     theme.schemes.dark.primary,
-                    {suffix: '-dark', prefix: prefix?.color}
+                    {dark: true, suffix: '-dark', prefix: prefix?.color}
                 )
             }
             : {}

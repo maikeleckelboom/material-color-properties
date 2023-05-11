@@ -9,6 +9,8 @@ import {
 } from "@material/material-color-utilities";
 
 import {hexAFromArgb, rgbFromHex, tokenize} from "./utils";
+import chalk from "chalk";
+import {log} from "util";
 
 /**
  * Defines a configuration object that can
@@ -137,13 +139,6 @@ function rgbProperties(properties: Record<string, string>, {
     }), {} as Record<string, string>)
 }
 
-/**
- * @param {CustomColorGroup} customColor - A CustomColorGroup object representing the base color of the palette.
- * @param {object} options - An options object containing the tones and sourceColor properties.
- * @param {number[]} options.tones - An array of tones to apply to the palette.
- * @param {number} options.sourceColor - The source color to use for blending if blend is true.
- * @returns {TonalPalette} The derived tonal palette.
- */
 function paletteFromCustomColor(customColor: CustomColorGroup, {
     tones,
     sourceColor
@@ -157,14 +152,6 @@ function paletteFromCustomColor(customColor: CustomColorGroup, {
     return tonalPalette
 }
 
-/**
- * @param {CustomColorGroup} colorGroup - The color group to derive properties for.
- * @param {object} [options] - Optional configuration for prefix, suffix, and dark mode.
- * @param {string} [options.prefix] - Optional prefix to prepend to each CSS custom property name.
- * @param {string} [options.suffix] - Optional suffix to append to each CSS custom property name.
- * @param {boolean} [options.dark] - Optional boolean flag indicating whether to use the "dark" color scheme.
- * @returns {Record<string, string>} - Object containing CSS custom property names and values.
- */
 function deriveCustomSchemeProperties(colorGroup: CustomColorGroup, options?: {
     suffix?: string,
     prefix?: string,
@@ -180,13 +167,6 @@ function deriveCustomSchemeProperties(colorGroup: CustomColorGroup, options?: {
     return properties
 }
 
-/**
- * @param customColors An array of CustomColorGroup objects.
- * @param tones An array of numbers representing the tones to derive custom properties for.
- * @param prefix An optional prefix to prepend to each custom property name.
- * @param suffix An optional suffix to append to each custom property name.
- * @param sourceColor The source color to use for blending if the base color is a blend.
- */
 function deriveCustomPaletteProperties(customColors: CustomColorGroup[], {
     tones,
     prefix,
@@ -206,16 +186,22 @@ function deriveCustomPaletteProperties(customColors: CustomColorGroup[], {
 }
 
 const getSurfaceContainers = (
-    surfaceColor: number,
-    primaryColor: number,
+    sourceColor: number,
     options?: {
         dark?: boolean,
         prefix?: string,
         suffix?: string
     },
 ) => {
-
     const roleToneMap = {
+        'surface-dim': {
+            light: 87,
+            dark: 6,
+        },
+        'surface-bright': {
+            light: 98,
+            dark: 24
+        },
         'surface-container-lowest': {
             light: 100,
             dark: 4
@@ -236,26 +222,19 @@ const getSurfaceContainers = (
             light: 90,
             dark: 22
         },
-        'surface-dim': {
-            light: 87,
-            dark: 6
-        },
-        'surface-bright': {
-            light: 98,
-            dark: 24
-        },
     }
+    const palette = TonalPalette.fromInt(sourceColor)
     return Object.entries(roleToneMap).reduce((acc, [role, tone]) => {
-        const color = Blend.cam16Ucs(surfaceColor, primaryColor, tone[options?.dark ? 'dark' : 'light'] / 100)
+        const tonalColor = palette.tone(tone[options?.dark ? 'dark' : 'light'])
         const name = `--${options?.prefix ?? 'md-sys-color-'}${role}${options?.suffix ?? ''}`
         return {
             ...acc,
-            [name]: hexFromArgb(color)
+            [name]: hexFromArgb(tonalColor)
         }
     }, {} as Record<string, string>)
 }
 
-const getSurfaceContainers1 = (
+const getSurfaceTints = (
     surfaceColor: number,
     primaryColor: number,
     options?: {
@@ -264,11 +243,7 @@ const getSurfaceContainers1 = (
     }
 ) => {
     const schemeNames = [
-        'surface-container-lowest',
-        'surface-container-low',
-        'surface-container',
-        'surface-container-high',
-        'surface-container-highest'
+        'background-tint'
     ]
     const prefix = options?.prefix ?? 'md-sys-color-'
     const suffix = options?.suffix ?? ''
@@ -362,6 +337,26 @@ function deriveProperties(theme: Theme, {
     }), {})
 
 
+    // const surfaceElevations = {
+    //     ...deriveSurfaceElevationProperties(dark
+    //             ? theme.schemes.dark.primary
+    //             : theme.schemes.light.primary,
+    //         {prefix: prefix?.color}
+    //     ),
+    //     ...brightnessSuffix
+    //         ? {
+    //             ...deriveSurfaceElevationProperties(theme.schemes.light.primary, {
+    //                 prefix: prefix?.color,
+    //                 suffix: '-light'
+    //             }),
+    //             ...deriveSurfaceElevationProperties(theme.schemes.dark.primary, {
+    //                 prefix: prefix?.color,
+    //                 suffix: '-dark',
+    //             })
+    //         }
+    //         : {}
+    // }
+    
     const surfaceElevations = {
         ...deriveSurfaceElevationProperties(dark
                 ? theme.schemes.dark.primary
@@ -385,19 +380,16 @@ function deriveProperties(theme: Theme, {
     const surfaceContainers = {
         ...getSurfaceContainers(
             theme.schemes[dark ? 'dark' : 'light'].surface,
-            theme.schemes[dark ? 'dark' : 'light'].primary,
             {dark, prefix: prefix?.color}
         ),
         ...brightnessSuffix
             ? {
                 ...getSurfaceContainers(
                     theme.schemes.light.surface,
-                    theme.schemes.light.primary,
                     {suffix: '-light', prefix: prefix?.color}
                 ),
                 ...getSurfaceContainers(
                     theme.schemes.dark.surface,
-                    theme.schemes.dark.primary,
                     {dark: true, suffix: '-dark', prefix: prefix?.color}
                 )
             }
@@ -427,9 +419,9 @@ function deriveProperties(theme: Theme, {
     return {
         ...palettes,
         ...schemes,
-        ...surfaceElevations,
         ...ccPalettes,
         ...ccSchemes,
+        ...surfaceElevations,
         ...surfaceContainers,
         ...({...rgb.include && surfaceContainersRgb}),
         ...({...rgb.include && palettesRgb}),

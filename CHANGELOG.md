@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 2.2.0
+
+### Minor Changes
+
+- 9b245e9: Added properties for the new surface color roles
+
 ## 2.1.6
 
 ### Patch Changes

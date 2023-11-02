@@ -480,9 +480,3 @@ export {
     rgbFromHex,
     tokenize,
 }
-
-/*
-    const theme = themeFromSourceColor(argbFromHex('#2ea6bb'))
-    const properties = propertiesFromTheme(theme)
-    console.log(properties)
-*/

@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 2.3.0
+
+### Minor Changes
+
+- c67b031: Upgrade of dependencies to latest
+
 ## 2.2.0
 
 ### Minor Changes

@@ -2,6 +2,12 @@
 
 This package streamlines the process of accessing properties from the Material Design 3 theme.
 
+> [!WARNING]  
+> This repository is used for personal purposes.
+> 
+> It is not recommended to use this package in production.
+> 
+
 ## Quick Setup
 
 Add `@webhead/material-color-properties` dependency to your project, also add `@material/material-color-utilities` if  you haven't already.

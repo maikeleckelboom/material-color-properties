@@ -1,5 +1,11 @@
 # @webhead/material-color-properties
 
+## 2.3.1
+
+### Patch Changes
+
+- 66a6cec: Hotfix
+
 ## 2.3.0
 
 ### Minor Changes

@@ -4,7 +4,6 @@ This package streamlines the process of accessing properties from the Material D
 
 > [!WARNING]  
 > This repository is used for personal purposes.
-> 
 > It is not recommended to use this package in production.
 > 
 
